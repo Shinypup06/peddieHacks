@@ -5,11 +5,9 @@ But none of his kids\
 Knew where that place is\
 And that is a real shame I think. Really. Shining how do you not know
 
-<<<<<<< Updated upstream
 In my defense\
 canada\
 sincerely, shining
-=======
 
 There once was a Swedish pop band
 with a palindromical brand
