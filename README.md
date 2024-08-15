@@ -14,4 +14,3 @@ with a palindromical brand
 so Benny and Frida
 and Bjorn and Agnetha
 wrote songs about the Mexican Revolution. What the hell guys you're from Sweden in the 70s. I'm writing this bc Rhymezone lists "Fernand" as a rhyme for "band".
->>>>>>> Stashed changes
