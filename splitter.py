@@ -1,4 +1,4 @@
-from spleeter.separator import Separator
+from spleeter.separator import Separator # type: ignore
 import os
 import warnings
 
@@ -18,7 +18,7 @@ def separate_audio(input_file, output_dir):
     separator.separate_to_file(input_file, output_dir)
 
 if __name__ == "__main__":
-    input = 'mammamia.mp3'
+    input = 'sampleAudios/mammamia.mp3'
     output = 'output/'
 
     separate_audio(input, output)
