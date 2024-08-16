@@ -13,21 +13,27 @@ def create_header(window, title):
 
 
 def upload_file1():
+    global input1
     file_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
     if file_path:
         # Extract and display file name
         file_name = file_path.split("/")[-1]  # For Unix-like paths
+        input1 = file_path
         global label_file1
         label_file1.config(text=f"File 1: {file_name}")
+        print(f"Input1: {input1}")
 
 
 def upload_file2():
+    global input2
     file_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
     if file_path:
         # Extract and display file name
         file_name = file_path.split("/")[-1]  # For Unix-like paths
+        input2 = file_path
         global label_file2
         label_file2.config(text=f"File 2: {file_name}")
+        print(f"Input2: {input2}")
 
 
 def fade_out(window, callback):
@@ -109,6 +115,11 @@ def show_main_window():
 def create_main_window():
     global root
     global label_file1, label_file2
+    global input1, input2
+
+    input1 = None
+    input2 = None
+
     root = tk.Tk()
     root.title("Upload MP3 Files")
     root.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
