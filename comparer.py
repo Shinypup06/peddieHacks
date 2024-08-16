@@ -27,4 +27,5 @@ def compareaudios(file1, file2):
         diff.append(frequency1[x]-frequency2[x])
 
     print(diff)
+    return(diff)
 
