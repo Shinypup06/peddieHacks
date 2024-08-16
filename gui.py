@@ -53,6 +53,18 @@ def upload_file2():
         label_file2.config(text=f"File 2: {file_name}")
         print(f"Input2: {input2}")
 
+def show_buttons(frame):
+    for widget in frame.winfo_children():
+        widget.grid_forget()  # Hide existing buttons
+    # Create 2 square buttons
+
+    button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
+                       fg="white")
+    button1.grid(row=0, column=1, padx=10, pady=5)
+
+    button2 = tk.Button(frame, text="◼", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
+                       fg="white")
+    button2.grid(row=0, column=2, padx=10, pady=5)
 
 def fade_out(window, callback):
     alpha = 1.0
@@ -95,6 +107,24 @@ def show_results():
     print("done separating audio")
     fade_out(root, lambda: create_results_window())
 
+def show_loading_screen():
+    global loading_window
+    loading_window = tk.Toplevel()
+    loading_window.title("Loading")
+    loading_window.geometry("1920x1080")
+    loading_window.configure(bg="lavender")
+    create_header(loading_window, "Loading...")
+
+    loading_frame = tk.Frame(loading_window, bg="lavender")
+    loading_frame.place(relx=0.5, rely=0.5, anchor='center')
+
+    loading_label = tk.Label(loading_frame, text="Processing your files, please wait...", font=("Helvetica", 24),
+                             bg="lavender", fg="#4B0082")
+    loading_label.pack(pady=20)
+
+    loading_window.update()
+    loading_window.destroy()
+    create_results_window()
 
 def create_results_window():
     global results_window
