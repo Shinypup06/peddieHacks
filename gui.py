@@ -259,6 +259,32 @@ def create_main_window():
     fade_in(root)
     root.mainloop()
 
+def show_record_window():
+    global welcome_window
+    fade_out(welcome_window, create_record_window)
+
+
+def create_record_window():
+    global record_window
+    record_window = tk.Toplevel()
+    record_window.title("Record")
+    record_window.geometry("1920x1080")
+    record_window.configure(bg="lavender")
+    create_header(record_window, "Record")
+
+    record_frame = tk.Frame(record_window, bg="lavender")
+    record_frame.place(relx=0.5, rely=0.5, anchor='center')
+
+    record_label = tk.Label(record_frame, text="This is the Record screen.", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
+    record_label.pack(pady=20)
+
+    re_record_button = tk.Button(record_frame, text="Re-record", command=lambda: print("Re-recording..."), width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
+    re_record_button.pack(pady=10)
+
+    save_analyze_button = tk.Button(record_frame, text="Save and Analyze", command=lambda: fade_out(record_window, create_results_window), width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
+    save_analyze_button.pack(pady=10)
+
+    fade_in(record_window)
 
 def show_welcome_window():
     global welcome_window
@@ -268,24 +294,22 @@ def show_welcome_window():
 
     welcome_window = tk.Tk()
     welcome_window.title("Welcome")
-    welcome_window.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
-    welcome_window.attributes("-alpha", 0.0)  # Start with invisible window
-
-    # Set the background color for the entire window
+    welcome_window.geometry("1920x1080")
+    welcome_window.attributes("-alpha", 0.0)
     welcome_window.configure(bg="lavender")
     create_header(welcome_window, "Welcome")
 
     welcome_frame = tk.Frame(welcome_window, bg="lavender")
-    welcome_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
+    welcome_frame.place(relx=0.5, rely=0.5, anchor='center')
 
-    welcome_label = tk.Label(welcome_frame,
-                             text="Welcome to the MP3 File Uploader\n\nPlease read the instructions below and click 'Start' to proceed.",
-                             font=("Helvetica", 24), bg="lavender", fg="#4B0082")
+    welcome_label = tk.Label(welcome_frame, text="Please choose an option:", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
     welcome_label.pack(pady=20)
 
-    start_button = tk.Button(welcome_frame, text="Start", command=lambda: fade_out(welcome_window, create_main_window),
-                             width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
-    start_button.pack(pady=10)
+    record_button = tk.Button(welcome_frame, text="Record", command=lambda: fade_out(welcome_window, create_record_window), width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
+    record_button.pack(pady=10)
+
+    analyze_button = tk.Button(welcome_frame, text="Analyze", command=lambda: fade_out(welcome_window, create_main_window), width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
+    analyze_button.pack(pady=10)
 
     fade_in(welcome_window)
     welcome_window.mainloop()
