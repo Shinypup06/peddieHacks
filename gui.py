@@ -40,6 +40,7 @@ def upload_file1():
         global label_file1
         label_file1.config(text=f"File 1: {file_name}")
         print(f"Input1: {input1}")
+        show_buttons(file1_buttons_frame)
 
 
 def upload_file2():
@@ -52,6 +53,7 @@ def upload_file2():
         global label_file2
         label_file2.config(text=f"File 2: {file_name}")
         print(f"Input2: {input2}")
+        show_buttons(file2_buttons_frame)
 
 def show_buttons(frame):
     for widget in frame.winfo_children():
@@ -164,7 +166,7 @@ def show_main_window():
 
 def create_main_window():
     global root
-    global label_file1, label_file2
+    global label_file1, label_file2, file1_buttons_frame, file2_buttons_frame
     global input1, input2
 
     input1 = None
@@ -195,6 +197,9 @@ def create_main_window():
     label_file1 = tk.Label(main_frame, text="File 1: None", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
     label_file1.grid(row=2, column=0, pady=5)
 
+    file1_buttons_frame = tk.Frame(main_frame, bg="lavender")
+    file1_buttons_frame.grid(row=3, column=0, pady=10)
+
     button_upload2 = tk.Button(main_frame, text="Upload MP3 File 2", command=upload_file2, width=19, height=2,
                                font=("Helvetica", 16), bg="white", fg="#4B0082")
     button_upload2.grid(row=1, column=1, padx=20, pady=10)
@@ -202,6 +207,9 @@ def create_main_window():
     global label_file2
     label_file2 = tk.Label(main_frame, text="File 2: None", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
     label_file2.grid(row=2, column=1, pady=5)
+
+    file2_buttons_frame = tk.Frame(main_frame, bg="lavender")
+    file2_buttons_frame.grid(row=3, column=1, pady=10)
 
     # Add one line of space between the upload labels and the run button
     spacer = tk.Label(main_frame, bg="lavender")
