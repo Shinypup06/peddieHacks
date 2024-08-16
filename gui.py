@@ -1,6 +1,24 @@
 import tkinter as tk
 from tkinter import filedialog
 
+from spleeter.separator import Separator
+import os
+import warnings
+
+#filter out warnings (idk if it actually does filter out warnings though)
+warnings.filterwarnings('ignore')
+
+def separate_audio(input_file, output_dir):
+
+    # 2 stems splits into vocal and accompaniment
+    separator = Separator('spleeter:2stems')
+
+    # Create an output directory
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Perform separation
+    separator.separate_to_file(input_file, output_dir)
 
 def create_header(window, title):
     # Create a header frame with white background
@@ -73,6 +91,8 @@ def fade_in(window):
 
 def show_results():
     global root
+    separate_audio(input1,'output/')
+    print("done separating audio")
     fade_out(root, lambda: create_results_window())
 
 
@@ -198,4 +218,5 @@ def show_welcome_window():
 
 
 # Create the initial welcome window
-show_welcome_window()
+if __name__ == "__main__":
+    show_welcome_window()
