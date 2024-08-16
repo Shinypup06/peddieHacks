@@ -5,8 +5,13 @@ from spleeter.separator import Separator
 import os
 import warnings
 
+import pygame
+
 #filter out warnings (idk if it actually does filter out warnings though)
 warnings.filterwarnings('ignore')
+
+#use pygame mixer for sound playback
+pygame.mixer.init()
 
 def separate_audio(input_file, output_dir):
 
@@ -40,7 +45,7 @@ def upload_file1():
         global label_file1
         label_file1.config(text=f"File 1: {file_name}")
         print(f"Input1: {input1}")
-        show_buttons(file1_buttons_frame)
+        show_buttons1(file1_buttons_frame)
 
 
 def upload_file2():
@@ -53,19 +58,41 @@ def upload_file2():
         global label_file2
         label_file2.config(text=f"File 2: {file_name}")
         print(f"Input2: {input2}")
-        show_buttons(file2_buttons_frame)
+        show_buttons2(file2_buttons_frame)
 
-def show_buttons(frame):
+def play_file(input):
+
+    pygame.mixer.music.load(input)
+    pygame.mixer.music.play()
+
+def stop_playback():
+    pygame.mixer.music.stop()
+
+
+def show_buttons1(frame):
     for widget in frame.winfo_children():
         widget.grid_forget()  # Hide existing buttons
     # Create 2 square buttons
 
     button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
-                       fg="white")
+                       fg="white", command=lambda: play_file(input1))
     button1.grid(row=0, column=1, padx=10, pady=5)
 
     button2 = tk.Button(frame, text="◼", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
-                       fg="white")
+                       fg="white", command=lambda: stop_playback())
+    button2.grid(row=0, column=2, padx=10, pady=5)
+
+def show_buttons2(frame):
+    for widget in frame.winfo_children():
+        widget.grid_forget()  # Hide existing buttons
+    # Create 2 square buttons
+
+    button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
+                       fg="white", command=lambda: play_file(input2))
+    button1.grid(row=0, column=1, padx=10, pady=5)
+
+    button2 = tk.Button(frame, text="◼", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
+                       fg="white", command=lambda: stop_playback())
     button2.grid(row=0, column=2, padx=10, pady=5)
 
 def fade_out(window, callback):
