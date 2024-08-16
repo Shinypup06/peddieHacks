@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog
 
+import time
+import threading
+
 from spleeter.separator import Separator
 import os
 import warnings
@@ -132,9 +135,13 @@ def fade_in(window):
 
 def show_results():
     global root
+    #TODO: show loading screen before processing starts, close loading screen after processing ends
+    fade_out(root, show_loading_screen)
+
+def splitAudio():
     separate_audio(input1,'output/')
     print("done separating audio")
-    fade_out(root, lambda: create_results_window())
+    fade_out(loading_window, create_results_window)
 
 def show_loading_screen():
     global loading_window
@@ -150,10 +157,12 @@ def show_loading_screen():
     loading_label = tk.Label(loading_frame, text="Processing your files, please wait...", font=("Helvetica", 24),
                              bg="lavender", fg="#4B0082")
     loading_label.pack(pady=20)
+    fade_in(loading_window)
 
-    loading_window.update()
-    loading_window.destroy()
-    create_results_window()
+
+    # Run the long task in a separate thread to prevent GUI freezing
+    threading.Thread(target=splitAudio).start()
+
 
 def create_results_window():
     global results_window
