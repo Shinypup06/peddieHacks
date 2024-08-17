@@ -542,7 +542,6 @@ def processOriginalSong():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    #TODO: enable generate button
 
     button_example.config(state=tk.NORMAL)
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
