@@ -13,6 +13,9 @@ from record import *
 pygame.init()
 pygame.mixer.init()
 
+current_entries = []
+leaderboard_text = ""
+
 def create_header(window, title):
     # Create a header frame with #F7EFE5 background
     header_frame = tk.Frame(window, bg="#674188", height=50)
@@ -132,23 +135,16 @@ def analyzeAudio():
     score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", input2))
     fade_out(loading_window, create_results_window)
 
-
 def add_to_leaderboard(entry_name, leaderboard, score_label):
-    name = entry_name.get()
+    global name
+    singer = entry_name.get()
 
-    # Convert the score_label text to an integer for sorting
-    try:
-        score = float(score_label.cget("text"))
-    except ValueError:
-        score = 0
-
-    if name and score >= 0:
-        # Create a list of tuples with (score, name)
-        current_entries = [(float(leaderboard.get(idx).split(": ")[1]), leaderboard.get(idx).split(": ")[0])
-                           for idx in range(leaderboard.size())]
+    if singer and score >= 0:
+        # Current entires is a list of tuples with (score, name)
+        global current_entries
 
         # Add the new score and name to the list
-        current_entries.append((score, name))
+        current_entries.append((score, singer, name))
 
         # Sort the list by score in descending order
         current_entries.sort(reverse=True, key=lambda x: x[0])
@@ -156,15 +152,18 @@ def add_to_leaderboard(entry_name, leaderboard, score_label):
         # Clear the leaderboard and insert sorted entries
         leaderboard.delete(0, tk.END)
         for entry in current_entries:
-            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f}")
+            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f} -- {name}")
+
 
         # Clear the input fields after adding to the leaderboard
         entry_name.delete(0, tk.END)
-        score_label.config(text="00.00")
+        score_label.config(text=score)
+        btn_add.config(state="disabled")
 
 def create_saved_window():
     global saved_window
     global welcome_window
+    global btn_add
     saved_window = tk.Toplevel()
     saved_window.title("Leaderboard")
     saved_window.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
@@ -184,21 +183,31 @@ def create_saved_window():
     entry_name.grid(row=0, column=1, padx=5, pady=5)
 
     tk.Label(saved_frame, text="Score:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40").grid(row=1, column=0, padx=5, pady=5)
-    score_label = tk.Label(saved_frame, text="00.00", font=("Verdana", 18), bg="#bfc0e2", fg="#674188")
+    score_label = tk.Label(saved_frame, text=score, font=("Verdana", 18), bg="#bfc0e2", fg="#674188")
     score_label.grid(row=1, column=1, padx=5, pady=5)
+
+    tk.Label(saved_frame, text="Song:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40").grid(row=2, column=0, padx=5, pady=5)
+    song_label = tk.Label(saved_frame, text=name, font=("Verdana", 18), bg="#bfc0e2", fg="#674188")
+    song_label.grid(row=2, column=1, padx=5, pady=5)
 
     # Pass the widgets to the add_to_leaderboard function
     btn_add = tk.Button(saved_frame, text="Add to Leaderboard",
                         command=lambda: add_to_leaderboard(entry_name, leaderboard, score_label),
                         font=("Verdana", 18), bg="#674188", fg="#F7EFE5", width=25, height=2)
-    btn_add.grid(row=2, column=0, columnspan=2, pady=10)
+    btn_add.grid(row=3, column=0, columnspan=2, pady=10)
 
     # Create the leaderboard listbox in the frame_leaderboard
     frame_leaderboard = tk.Frame(main_frame, bg="#bfc0e2")
     frame_leaderboard.grid(row=0, column=1, padx=20, pady=20)
 
     tk.Label(frame_leaderboard, text="Leaderboard:", font=("Verdana", 24), bg="#bfc0e2", fg="#0a0b40").pack()
-    leaderboard = tk.Listbox(frame_leaderboard, width=20, height=15, font=("Verdana", 18), bg="#F7EFE5", fg="#674188")
+    leaderboard = tk.Listbox(frame_leaderboard, width=40, height=15, font=("Verdana", 18), bg="#F7EFE5", fg="#674188")
+    
+    # add previous entries
+    leaderboard.delete(0, tk.END)
+    for entry in current_entries:
+        leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f} -- {name}")
+
     leaderboard.pack()
 
     # Create a frame for buttons at the bottom
@@ -213,8 +222,6 @@ def create_saved_window():
 
     fade_in(saved_window)
     saved_window.mainloop()
-
-
 
 def show_loading_screen():
     global loading_window
@@ -231,7 +238,6 @@ def show_loading_screen():
                              bg="#bfc0e2", fg="#0a0b40")
     loading_label.pack(pady=20)
     fade_in(loading_window)
-
 
     # Run the long task in a separate thread to prevent GUI freezing
     threading.Thread(target=analyzeAudio).start()
@@ -459,7 +465,7 @@ def create_record_window():
     back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     save_analyze_button = tk.Button(bottom_frame, text="Save & Analyze",
-                                    command=lambda: fade_out(record_window, create_results_window), width=15, height=2,
+                                    command=lambda: fade_out(record_window, showLoadingWindow2), width=15, height=2,
                                     font=("Verdana", 24), bg="#674188", fg="#F7EFE5", state=tk.DISABLED)
     save_analyze_button.pack(side=tk.RIGHT, padx=10, pady=10)  # Positioned to the right side of the bottom frame
 
@@ -477,6 +483,29 @@ def create_record_window():
     fade_in(record_window)
     record_window.mainloop()
 
+def analyzeRecordedAudio():
+    global score
+    score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", "output.wav"))
+    fade_out(loading_window, create_results_window)
+
+def showLoadingWindow2():
+    global loading_window
+    loading_window = tk.Toplevel()
+    loading_window.title("Loading")
+    loading_window.geometry("1920x1080")
+    loading_window.configure(bg="#bfc0e2")
+    create_header(loading_window, "Loading...")
+
+    loading_frame = tk.Frame(loading_window, bg="#bfc0e2")
+    loading_frame.place(relx=0.5, rely=0.5, anchor='center')
+
+    loading_label = tk.Label(loading_frame, text="Processing your files, please wait...", font=("Verdana", 24),
+                             bg="#bfc0e2", fg="#0a0b40")
+    loading_label.pack(pady=20)
+    fade_in(loading_window)
+
+    # Run the long task in a separate thread to prevent GUI freezing
+    threading.Thread(target=analyzeRecordedAudio).start()
 
 def processOriginalSong():
     global lyrics

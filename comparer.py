@@ -25,27 +25,34 @@ def compareaudios(file1, file2):
     time1, frequency1, confidence1, activation1 = crepe.predict(audio1, sr1, model_capacity='tiny', viterbi=True)
     time2, frequency2, confidence2, activation2 = crepe.predict(audio2, sr2, model_capacity='tiny', viterbi=True)
     
-    # print(pitchattime(time1,frequency1))
-    frequency1=combinedata(10,frequency1)
-    frequency2=combinedata(10,frequency2)
+    # # print(pitchattime(time1,frequency1))
+    frequency1=combinedata(175,frequency1)
+    frequency2=combinedata(175,frequency2)
+    confidence1=combinedata(175,confidence1)
+    confidence2=combinedata(175,confidence2)
 
     diff = []
 
     for x in range (0,min(len(frequency1),len(frequency2))):
-        # frequency1[x]=removeoctave(frequency1[x],frequency2[x])
-        if abs(frequency1[x]-frequency2[x])<=2:
+        frequency1[x]=removeoctave(frequency1[x],frequency2[x])
+        if abs(frequency1[x]-frequency2[x])<=20:
             temp = 0
         elif frequency2[x]>frequency1[x]:
-            temp = frequency1[x]-frequency2[x]+2
+            temp = frequency1[x]-frequency2[x]+20
         else:
-            temp = frequency1[x]-frequency2[x]-2
+            temp = frequency1[x]-frequency2[x]-20
 
-        # diff.append(temp*confidence2[x])
-        diff.append(temp)
+        diff.append(temp*confidence2[x])
+    
+    diff=removeoutliers(diff)
 
+    # print(frequency1)
+    # print(frequency2)
+    # print(confidence2)
+    # print(diff)
     netdiff = statistics.mean((abs(x) for x in diff))
     print(netdiff)
-    return(netdiff)
+    return(diff)
 
 def removeoctave(fr1, fr2):
     if fr1>fr2:
@@ -55,26 +62,19 @@ def removeoctave(fr1, fr2):
         l = math.floor(math.log(fr2/fr1,2))
         return (fr1*pow(2,l))
 
-# def pitchattime(time, frequency):
-#     pitches = []
-#     prevf = frequency[0]
-#     prevt = time[0]
-#     temp = 0
-#     cnt = 0
-#     for x in range(0,len(frequency)):
-#         temp += frequency[x]
-#         cnt += 1
-#         if time[x]-prevt>0.25:
-#             temp/=cnt
-#             pitches.append([time[x],temp])
-#             prevf=temp
-#             temp = 0
-#             cnt = 0
-#             prevt=time[x]
-#     return pitches
+def removeoutliers(list):
+    mu = np.mean(list)
+    std = np.std(list)
+    x=0
+    while x <len(list):  
+        if (list[x] > mu + 2*std):
+            list.pop(x)
+        else: x+=1
+    # print(list) 
+    return(list)
 
-#calculate a percentage score from 0 - 100
+#calculate a percentage score from 0 - 100 using quadratic regression
 def scaleToScore(netDiff):
-    return round(((1 - ((netDiff) / 200)) * 100), 2)
+    return round(145 - 3.257*netDiff + 0.01807*pow(netDiff,2), 2)
 
 
