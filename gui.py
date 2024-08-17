@@ -8,6 +8,7 @@ from splitter import *
 from sound import *
 from lyricReader import *
 from record import *
+from lyrics import *
 
 #use pygame mixer for sound playback
 pygame.init()
@@ -356,8 +357,6 @@ def update_run_button_state():
     else:
         button_run.config(state=tk.DISABLED)  # Disable the Run button
 
-import tkinter as tk
-
 def create_record_window():
     global record_window
     global label_file1, file_buttons_frame, playFrame
@@ -366,6 +365,7 @@ def create_record_window():
     global re_record_button
     global save_analyze_button
     global text_block
+    global artist_entry, song_entry
     default_text = "Your lyrics will show up here after you upload your song! Feel free to change them. Lyric detection is still under development."
     input1 = None
 
@@ -451,7 +451,7 @@ def create_record_window():
     artist_entry.grid(row=2, column=1, padx=10, pady=10, sticky='w')
 
     # Search button
-    search_button = tk.Button(middle_frame, text="Search", command=print("searched"), font=("Verdana", 20), bg="#674188", fg="#F7EFE5")
+    search_button = tk.Button(middle_frame, text="Search", command=searchLyrics, font=("Verdana", 20), bg="#674188", fg="#F7EFE5")
     search_button.grid(row=3, column=0, columnspan=2, pady=20)
 
     # Create a frame for buttons at the bottom
@@ -483,6 +483,28 @@ def create_record_window():
     fade_in(record_window)
     record_window.mainloop()
 
+def searchLyrics():
+    global lyrics
+    artist = artist_entry.get()
+    title = song_entry.get()
+    
+    lyrics = getInternetLyrics(artist, title)
+    
+    # Insert generated lyrics into the lyrics box
+    text_block.delete('1.0', tk.END)
+    text_block.insert(tk.END, lyrics)
+
+    rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
+
+# TODO: need a generate lyrics button
+def getGeneratedLyrics():
+    global lyrics
+    lyrics = getLyrics("output/" + name + "/vocals.wav")
+    
+    # Insert generated lyrics into the lyrics box
+    text_block.delete('1.0', tk.END)
+    text_block.insert(tk.END, lyrics)
+
 def analyzeRecordedAudio():
     global score
     score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", "output.wav"))
@@ -511,12 +533,7 @@ def processOriginalSong():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    lyrics = getLyrics("output/" + name + "/vocals.wav")
     
-    # Insert generated lyrics into the lyrics box
-    text_block.delete('1.0', tk.END)
-    text_block.insert(tk.END, lyrics)
-
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
 
 def upload_fileRec():
