@@ -3,6 +3,9 @@ import math
 import numpy as np
 import statistics
 from scipy.io import wavfile
+import tensorflow as tf
+
+
 
 def combinedata(n,list):
     newlist = []
@@ -16,8 +19,8 @@ def combinedata(n,list):
     return newlist
 
 def compareaudios(file1, file2):
-    sr1, audio1 = wavfile.read('D:\MyProfile\Documents\GitHub\peddieHacks\sampleAudios\mammamiavocals.wav')
-    sr2, audio2 = wavfile.read('notmm.wav')
+    sr1, audio1 = wavfile.read(file1)
+    sr2, audio2 = wavfile.read(file2)
 
     time1, frequency1, confidence1, activation1 = crepe.predict(audio1, sr1, model_capacity='tiny', viterbi=True)
     time2, frequency2, confidence2, activation2 = crepe.predict(audio2, sr2, model_capacity='tiny', viterbi=True)
@@ -40,16 +43,9 @@ def compareaudios(file1, file2):
         # diff.append(temp*confidence2[x])
         diff.append(temp)
 
-    # for x in range (0,len(diff)):
-    #     if abs(diff[x])>100:
-    #         diff[x]=0
-
-    # print(frequency1)
-    # print(frequency2)
-    # print(diff)
     netdiff = statistics.mean((abs(x) for x in diff))
-    # print(netdiff)
-    return(diff)
+    print(netdiff)
+    return(netdiff)
 
 def removeoctave(fr1, fr2):
     if fr1>fr2:
@@ -77,4 +73,8 @@ def removeoctave(fr1, fr2):
 #             prevt=time[x]
 #     return pitches
 
-compareaudios(1,1)
+#calculate a percentage score from 0 - 100
+def scaleToScore(netDiff):
+    return round(((1 - ((netDiff) / 200)) * 100), 2)
+
+
