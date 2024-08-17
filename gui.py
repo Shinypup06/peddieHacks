@@ -384,7 +384,7 @@ def create_record_window():
 
     # Create a frame for the top half of the window
     record_frame = tk.Frame(center_frame, bg="#bfc0e2")
-    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(70, 0))
+    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(20, 0))
 
     label_instruction = tk.Label(record_frame, text="Please upload a WAV file of\nthe original song below:",
                                  font=("Verdana", 24),
@@ -399,7 +399,7 @@ def create_record_window():
     label_above_text.grid(row=0, column=2, pady=(50, 5), sticky='w')  # Adjusted pady to move down
 
     # Create a block of editable text
-    text_block = tk.Text(record_frame, wrap='word', height=5, width=30, font=("Verdana", 18), bg="#F7EFE5",
+    text_block = tk.Text(record_frame, wrap='word', height=5, width=25, font=("Verdana", 18), bg="#F7EFE5",
                          fg="#674188")
     text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')  # Adjusted pady to move down
 
@@ -425,8 +425,8 @@ def create_record_window():
     playFrame = tk.Frame(record_frame, bg="#bfc0e2")
     playFrame.grid(row=3, column=0, columnspan=2, pady=10)
 
-    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
-    label_file1.grid(row=2, column=0, pady=5)  # Adjusted columnspan to 1
+    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 18), bg="#bfc0e2", fg="#674188")
+    label_file1.grid(row=2, column=0, pady=1)  # Adjusted columnspan to 1
 
     file_buttons_frame = tk.Frame(record_frame, bg="#bfc0e2")
     file_buttons_frame.grid(row=3, column=1, pady=10, columnspan=2)
@@ -435,7 +435,7 @@ def create_record_window():
     middle_frame = tk.Frame(record_window, bg="#bfc0e2")
     middle_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-    label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
+    label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 12), bg="#bfc0e2", fg="#0a0b40")
     label_blank.grid(row=0, column=0, padx=10, pady=10, sticky='e')
 
     # Song input
@@ -455,7 +455,7 @@ def create_record_window():
     search_button.grid(row=3, column=0, columnspan=2, pady=20)
 
     # Create a frame for buttons at the bottom
-    bottom_frame = tk.Frame(record_window, bg="#bfc0e2")
+    bottom_frame = tk.Frame(record_window, bg="#bfc0e2", height=80)  # Set a fixed height if needed
     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
 
     # Add buttons to bottom_frame
@@ -482,6 +482,8 @@ def create_record_window():
 
     fade_in(record_window)
     record_window.mainloop()
+
+
 
 def analyzeRecordedAudio():
     global score
