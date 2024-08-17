@@ -73,8 +73,8 @@ def removeoutliers(list):
     # print(list) 
     return(list)
 
-#calculate a percentage score from 0 - 100
+#calculate a percentage score from 0 - 100 using quadratic regression
 def scaleToScore(netDiff):
-    return round(((1 - ((netDiff) / 200)) * 100), 2)
+    return round(145 - 3.257*netDiff + 0.01807*pow(netDiff,2), 2)
 
 
