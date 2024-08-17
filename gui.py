@@ -8,7 +8,7 @@ import warnings
 import wave
 import pyaudio
 import pygame
-# import whisper
+import whisper
 
 
 #filter out warnings (idk if it actually does filter out warnings though)
@@ -352,9 +352,9 @@ def splitAudio2():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    # lyrics = whisper.load_model("base").transcribe("output/" + name + "/vocals.wav")["text"]
+    lyrics = whisper.load_model("base").transcribe("output/" + name + "/vocals.wav")["text"]
+    print(lyrics)
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
-
 
 def upload_fileRec():
     global input1, name
@@ -390,7 +390,7 @@ def startRecording():
     RECORD_SECONDS = get_audio_length(input1)  # Max duration of recording in seconds
     OUTPUT_FILENAME = "output.wav"  # Output file name
 
-    # Global variable to control recording
+    # Global variable to control recording, set to true when re-record is clicked
     stop_recording = False
 
     # Start recording audio in a separate thread
@@ -404,6 +404,7 @@ def startRecording():
 def record_audio():
         audio = pyaudio.PyAudio()
 
+        # plays the spliced audio accompaniment
         play_file("output/" + name + "/accompaniment.wav")
 
         # Start Recording
@@ -415,6 +416,7 @@ def record_audio():
         frames = []
         start_time = time.time()
 
+        #keep recording until backtrack ends OR until user hits re-record
         while not stop_recording and (time.time() - start_time) < RECORD_SECONDS:
             data = stream.read(CHUNK)
             frames.append(data)
@@ -447,7 +449,6 @@ def record_audio():
         button2.grid(row=0, column=2, padx=10, pady=5)
 
         # Enable the Save and Analyze button
-
         save_analyze_button.config(state=tk.NORMAL)
 
 def stop_rec():
@@ -498,7 +499,6 @@ def show_welcome_window():
                                command=lambda: fade_out(welcome_window, create_main_window), width=15, height=2,
                                font=("Verdana", 18), bg="#674188", fg="#F7EFE5")
     analyze_button.pack()
-
 
     fade_in(welcome_window)
     welcome_window.mainloop()

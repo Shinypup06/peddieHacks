@@ -31,7 +31,7 @@ def get_lyrics_genius(song_url):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         # Look for the lyrics container, updated with Genius site structure
-        lyrics_div = soup.find('div', class_='Lyrics__Container-sc-1ynbvzw-6 YYrds')
+        lyrics_div = soup.find('div', {'data-lyrics-container': "true"})
         if lyrics_div:
             lyrics = lyrics_div.get_text(separator="\n")
             return lyrics
