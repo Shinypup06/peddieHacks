@@ -264,27 +264,94 @@ def show_record_window():
     fade_out(welcome_window, create_record_window)
 
 
+
+
 def create_record_window():
     global record_window
-    record_window = tk.Toplevel()
+    global label_file1, file1_buttons_frame
+    global input1
+    global rec_play_button
+    global re_record_button
+    global save_analyze_button
+
+    input1 = None
+
+    record_window = tk.Tk()
     record_window.title("Record")
-    record_window.geometry("1920x1080")
+    record_window.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
+    record_window.attributes("-alpha", 0.0)  # Start with invisible window
+
+    # Set the background color for the entire window
     record_window.configure(bg="lavender")
     create_header(record_window, "Record")
 
     record_frame = tk.Frame(record_window, bg="lavender")
-    record_frame.place(relx=0.5, rely=0.5, anchor='center')
+    record_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
 
-    record_label = tk.Label(record_frame, text="This is the Record screen.", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
-    record_label.pack(pady=20)
+    label_instruction = tk.Label(record_frame, text="Please upload the MP3 files below:", font=("Helvetica", 24),
+                                 bg="lavender", fg="#4B0082")
+    label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 
-    re_record_button = tk.Button(record_frame, text="Re-record", command=lambda: print("Re-recording..."), width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
-    re_record_button.pack(pady=10)
+    # Create a grid for the buttons
+    button_upload1 = tk.Button(record_frame, text="Upload MP3 File 1", command=upload_file1, width=19, height=2,
+                               font=("Helvetica", 16), bg="white", fg="#4B0082")
+    button_upload1.grid(row=1, column=0, padx=20, pady=10)
 
-    save_analyze_button = tk.Button(record_frame, text="Save and Analyze", command=lambda: fade_out(record_window, create_results_window), width=15, height=2, font=("Helvetica", 24), bg="#4B0082", fg="white")
-    save_analyze_button.pack(pady=10)
+    rec_play_button = tk.Button(record_frame, text="Rec/Play", command=enable_save_and_analyze_button, width=15, height=2,
+                                font=("Helvetica", 16), bg="white", fg="#4B0082",
+                                state=tk.DISABLED)  # Disabled by default
+    rec_play_button.grid(row=1, column=1, padx=20, pady=10)  # Positioned to the right of the upload button
+
+    re_record_button = tk.Button(record_frame, text="Re-record", command=lambda: print("Re-recording..."), width=15,
+                                 height=2, font=("Helvetica", 16), bg="#4B0082", fg="white", state=tk.DISABLED)
+    re_record_button.grid(row=2, column=1, padx=20, pady=10)  # Positioned below the Rec/Play button
+
+    global label_file1
+    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
+    label_file1.grid(row=2, column=0, pady=5)  # Adjusted columnspan to 1
+
+    file1_buttons_frame = tk.Frame(record_frame, bg="lavender")
+    file1_buttons_frame.grid(row=3, column=0, pady=10, columnspan=2)
+
+    # Create a frame for buttons at the bottom
+    bottom_frame = tk.Frame(record_window, bg="lavender")
+    bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
+
+    # Add buttons to bottom_frame
+    back_button = tk.Button(bottom_frame, text="Back to Welcome Screen",
+                                    command=go_to_welcome_screen, width=15, height=2,
+                                    font=("Helvetica", 24), bg="#4B0082", fg="white")
+    back_button.pack(side=tk.LEFT, padx=10, pady=10)
+
+    save_analyze_button = tk.Button(bottom_frame, text="Save and Analyze",
+                                    command=show_results_window, width=15, height=2,
+                                    font=("Helvetica", 24), bg="#4B0082", fg="white", state=tk.DISABLED)
+    save_analyze_button.pack(side=tk.RIGHT, padx=10, pady=10)  # Positioned to the right side of the bottom frame
 
     fade_in(record_window)
+    record_window.mainloop()
+
+def show_results_window():
+    record_window.destroy()  # Close the current window
+    create_results_window()
+
+def go_to_welcome_screen():
+    record_window.destroy()  # Close the current window
+    show_welcome_window()  # Call function to create the welcome screen
+
+
+def upload_file1():
+    global file_path  # Global variable to store the file path
+    file_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
+
+    if file_path:  # Check if a file was selected
+        label_file1.config(text=f"File 1: {file_path.split('/')[-1]}")  # Update label with the file name
+        rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
+        re_record_button.config(state=tk.NORMAL)  # Enable the Re-record button
+
+def enable_save_and_analyze_button():
+    # Function to enable the Save and Analyze button
+    save_analyze_button.config(state=tk.NORMAL)
 
 def show_welcome_window():
     global welcome_window

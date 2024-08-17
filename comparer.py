@@ -14,20 +14,32 @@ def combinedata(n,list):
     return newlist
 
 def compareaudios(file1, file2):
-    sr1, audio1 = wavfile.read('ViolinA.wav')
-    sr2, audio2 = wavfile.read('A.wav')
+    sr1, audio1 = wavfile.read('D:\MyProfile\Documents\GitHub\peddieHacks\sampleAudios\scale.wav')
+    sr2, audio2 = wavfile.read('D:\MyProfile\Documents\GitHub\peddieHacks\sampleAudios\scalevoice.wav')
     time1, frequency1, confidence1, activation1 = crepe.predict(audio1, sr1, viterbi=True)
     time2, frequency2, confidence2, activation2 = crepe.predict(audio2, sr2, viterbi=True)
 
-    frequency1=combinedata(20,frequency1)
-    frequency1=combinedata(20,frequency2)
+    frequency1=combinedata(10,frequency1)
+    frequency2=combinedata(10,frequency2)
 
     diff = []
 
     for x in range (0,min(len(frequency1),len(frequency2))):
         frequency1[x]=removeoctave(frequency1[x],frequency2[x])
-        diff.append(frequency1[x]-frequency2[x])
+        if frequency2[x]<frequency1[x]+2 and frequency2[x]>frequency1[x]-2:
+            temp = 0
+        else:
+            temp = frequency1[x]-frequency2[x]
 
+        diff.append(temp*confidence2[x])
+
+    for x in range (0,len(diff)):
+        if abs(diff[x])>100:
+            diff[x]=0
+
+    # print(frequency1)
+    # print(frequency2)
+    print(diff)
     print(netdiff(diff))
     return(diff)
 
