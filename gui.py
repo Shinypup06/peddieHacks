@@ -20,10 +20,6 @@ pygame.init()
 pygame.mixer.init()
 
 
-def load_images():
-    global staff
-    # Load the image
-    staff = tk.PhotoImage(file=r"images\top.png")  # Replace with the path to your image file
 
 def separate_audio(input_file, output_dir):
 
@@ -147,6 +143,86 @@ def splitAudio():
     print("done separating audio")
     fade_out(loading_window, create_results_window)
 
+
+def add_to_leaderboard(entry_name, entry_score, leaderboard):
+    name = entry_name.get()
+    score = entry_score.get()
+
+    if name and score.isdigit():
+        score = int(score)
+        # Create a list of tuples with (score, name)
+        current_entries = [(int(leaderboard.get(idx).split(": ")[1]), leaderboard.get(idx).split(": ")[0])
+                           for idx in range(leaderboard.size())]
+
+        # Add the new score and name to the list
+        current_entries.append((score, name))
+
+        # Sort the list by score in descending order
+        current_entries.sort(reverse=True, key=lambda x: x[0])
+
+        # Clear the leaderboard and insert sorted entries
+        leaderboard.delete(0, tk.END)
+        for entry in current_entries:
+            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]}")
+
+        # Clear the input fields after adding to the leaderboard
+        entry_name.delete(0, tk.END)
+        entry_score.delete(0, tk.END)
+
+def create_saved_window():
+    global saved_window
+    global welcome_window
+    saved_window = tk.Toplevel()
+    saved_window.title("Leaderboard")
+    saved_window.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
+    saved_window.configure(bg="#bfc0e2")
+    create_header(saved_window, "Leaderboard")
+
+    # Create a main frame to hold both the entry form and the leaderboard side by side
+    main_frame = tk.Frame(saved_window, bg="#bfc0e2")
+    main_frame.place(relx=0.5, rely=0.5, anchor='center')
+
+    # Create the text input fields and 'Add' button
+    saved_frame = tk.Frame(main_frame, bg="#bfc0e2")
+    saved_frame.grid(row=0, column=0, padx=20, pady=20)
+
+    tk.Label(saved_frame, text="Name:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40").grid(row=0, column=0, padx=5, pady=5)
+    entry_name = tk.Entry(saved_frame, font=("Verdana", 18), width=20, bg="#F7EFE5", fg="#674188")
+    entry_name.grid(row=0, column=1, padx=5, pady=5)
+
+    tk.Label(saved_frame, text="Score:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40").grid(row=1, column=0, padx=5, pady=5)
+    entry_score = tk.Entry(saved_frame, font=("Verdana", 18), width=20, bg="#F7EFE5", fg="#674188")
+    entry_score.grid(row=1, column=1, padx=5, pady=5)
+
+    # Pass the widgets to the add_to_leaderboard function
+    btn_add = tk.Button(saved_frame, text="Add to Leaderboard",
+                        command=lambda: add_to_leaderboard(entry_name, entry_score, leaderboard),
+                        font=("Verdana", 18), bg="#674188", fg="#F7EFE5", width=25, height=2)
+    btn_add.grid(row=2, column=0, columnspan=2, pady=10)
+
+    # Create the leaderboard listbox in the frame_leaderboard
+    frame_leaderboard = tk.Frame(main_frame, bg="#bfc0e2")
+    frame_leaderboard.grid(row=0, column=1, padx=20, pady=20)
+
+    tk.Label(frame_leaderboard, text="Leaderboard:", font=("Verdana", 24), bg="#bfc0e2", fg="#0a0b40").pack()
+    leaderboard = tk.Listbox(frame_leaderboard, width=20, height=15, font=("Verdana", 18), bg="#F7EFE5", fg="#674188")
+    leaderboard.pack()
+
+    # Create a frame for buttons at the bottom
+    bottom_frame = tk.Frame(saved_window, bg="#bfc0e2")
+    bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
+
+    # Add buttons to bottom_frame
+    btn_back = tk.Button(bottom_frame, text="Back",
+                         command=lambda: fade_out(saved_window, show_welcome_window),
+                         width=15, height=2, font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
+    btn_back.pack(side=tk.LEFT, padx=10, pady=10)
+
+    fade_in(saved_window)
+    saved_window.mainloop()
+
+
+
 def show_loading_screen():
     global loading_window
     loading_window = tk.Toplevel()
@@ -159,7 +235,7 @@ def show_loading_screen():
     loading_frame.place(relx=0.5, rely=0.5, anchor='center')
 
     loading_label = tk.Label(loading_frame, text="Processing your files, please wait...", font=("Verdana", 24),
-                             bg="#bfc0e2", fg="#674188")
+                             bg="#bfc0e2", fg="#0a0b40")
     loading_label.pack(pady=20)
     fade_in(loading_window)
 
@@ -169,6 +245,7 @@ def show_loading_screen():
 
 def create_results_window():
     global results_window
+
     results_window = tk.Tk()
     results_window.title("Results")
     results_window.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
@@ -189,10 +266,17 @@ def create_results_window():
     result_display = tk.Label(results_frame, text=result_text, font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
     result_display.pack(pady=10)
 
-    back_button = tk.Button(results_frame, text="Back",
+    # New button placed at the bottom right corner
+    new_button = tk.Button(results_window, text="Save results",
+                           command=lambda: fade_out(results_window, create_saved_window), width=15, height=2,
+                           font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
+    new_button.place(relx=0.95, rely=0.95, anchor='se')  # Place at the bottom right corner
+
+    # Back button placed at the bottom left corner
+    back_button = tk.Button(results_window, text="Back",
                             command=lambda: fade_out(results_window, show_welcome_window), width=15, height=2,
                             font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
-    back_button.pack(pady=10)
+    back_button.place(relx=0.05, rely=0.95, anchor='sw')  # Place at the bottom left corner
 
     fade_in(results_window)
     results_window.mainloop()
@@ -219,7 +303,7 @@ def create_main_window():
     main_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
 
     label_instruction = tk.Label(main_frame, text="Please upload the WAV files below:", font=("Verdana", 24),
-                                 bg="#bfc0e2", fg="#674188")
+                                 bg="#bfc0e2", fg="#0a0b40")
     label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 
     # Create a grid for the buttons
@@ -296,15 +380,23 @@ def create_record_window():
     record_frame = tk.Frame(record_window, bg="#bfc0e2")
     record_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
 
-    label_instruction = tk.Label(record_frame, text="Please upload the original song WAV file below:", font=("Verdana", 24),
-                                 bg="#bfc0e2", fg="#674188")
+    label_instruction = tk.Label(record_frame, text="Please upload a WAV file of\nthe original song below:", font=("Verdana", 24),
+                                 bg="#bfc0e2", fg="#0a0b40")
     label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 
+    # New label directly above the text block
+    label_above_text = tk.Label(record_frame, text="         Use the generated lyrics or\n         paste from the internet:", font=("Verdana", 24),
+                                bg="#bfc0e2", fg="#0a0b40")
+    label_above_text.grid(row=0, column=2, pady=10, sticky='w')  # Position above the text block
+
     # Create a block of editable text
-    text_block = tk.Text(record_frame, wrap='word', height=10, width=40, font=("Verdana", 18), bg="#F7EFE5", fg="#674188")
-    text_block.grid(row=0, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')
+    text_block = tk.Text(record_frame, wrap='word', height=10, width=40, font=("Verdana", 18), bg="#F7EFE5",
+                         fg="#674188")
+    text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')
 
     text_block.insert(tk.END, default_text)
+
+
 
     # Create a grid for the buttons
     button_upload1 = tk.Button(record_frame, text="Upload original song", command=upload_fileRec, width=19, height=2,
@@ -312,12 +404,12 @@ def create_record_window():
     button_upload1.grid(row=1, column=0, padx=20, pady=10)
 
     rec_play_button = tk.Button(record_frame, text="Rec/Play", command=startRecording, width=15, height=2,
-                                font=("Verdana", 16), bg="#F7EFE5", fg="black",
+                                font=("Verdana", 16), bg="#F7EFE5", fg="#0a0b40",
                                 state=tk.DISABLED)  # Disabled by default
     rec_play_button.grid(row=1, column=1, padx=20, pady=10)  # Positioned to the right of the upload button
 
     re_record_button = tk.Button(record_frame, text="Re-record", command=lambda: stop_rec(), width=15,
-                                 height=2, font=("Verdana", 16), bg="#F7EFE5", fg="black", state=tk.DISABLED)
+                                 height=2, font=("Verdana", 16), bg="#F7EFE5", fg="#0a0b40", state=tk.DISABLED)
     re_record_button.grid(row=2, column=1, padx=20, pady=10)  # Positioned below the Rec/Play button
 
     playFrame = tk.Frame(record_frame, bg="#bfc0e2")
@@ -498,12 +590,12 @@ def show_welcome_window():
     record_frame.grid(row=1, column=1, padx=20, pady=(20, 40))
 
     record_label = tk.Label(record_frame, text="Upload a WAV file of any song \n Record your voice with the \n automatically separated instrumentals", font=("Verdana", 18), bg="#bfc0e2",
-                            fg="#674188")
+                            fg="#0a0b40")
     record_label.pack(pady=10)
 
     record_button = tk.Button(record_frame, text="Record",
                               command=lambda: fade_out(welcome_window, create_record_window), width=15, height=2,
-                              font=("Verdana", 18), bg="#674188", fg="#F7EFE5")
+                              font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
     record_button.pack()
 
     # Create a frame for the Analyze button and its label
@@ -511,12 +603,12 @@ def show_welcome_window():
     analyze_frame.grid(row=1, column=0, padx=20, pady=(20,40))
 
     analyze_label = tk.Label(analyze_frame, text="Have a recording of your singing? \n Upload the original song and \n your recording as WAV files", font=("Verdana", 18), bg="#bfc0e2",
-                             fg="#674188")
+                             fg="#0a0b40")
     analyze_label.pack(pady=10)
 
     analyze_button = tk.Button(analyze_frame, text="Analyze",
                                command=lambda: fade_out(welcome_window, create_main_window), width=15, height=2,
-                               font=("Verdana", 18), bg="#674188", fg="#F7EFE5")
+                               font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
     analyze_button.pack()
 
 
