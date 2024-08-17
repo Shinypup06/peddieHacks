@@ -40,7 +40,7 @@ def create_header(window, title):
 
 def upload_file1():
     global input1
-    file_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
+    file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
     if file_path:
         # Extract and display file name
         file_name = file_path.split("/")[-1]  # For Unix-like paths
@@ -53,7 +53,7 @@ def upload_file1():
 
 def upload_file2():
     global input2
-    file_path = filedialog.askopenfilename(filetypes=[("MP3 files", "*.mp3")])
+    file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
     if file_path:
         # Extract and display file name
         file_name = file_path.split("/")[-1]  # For Unix-like paths
