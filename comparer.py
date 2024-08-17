@@ -6,7 +6,6 @@ from scipy.io import wavfile
 import tensorflow as tf
 
 
-
 def combinedata(n,list):
     newlist = []
     temp = 0
@@ -24,8 +23,7 @@ def compareaudios(file1, file2):
 
     time1, frequency1, confidence1, activation1 = crepe.predict(audio1, sr1, model_capacity='tiny', viterbi=True)
     time2, frequency2, confidence2, activation2 = crepe.predict(audio2, sr2, model_capacity='tiny', viterbi=True)
-    
-    # # print(pitchattime(time1,frequency1))
+
     frequency1=combinedata(175,frequency1)
     frequency2=combinedata(175,frequency2)
     confidence1=combinedata(175,confidence1)
@@ -46,10 +44,6 @@ def compareaudios(file1, file2):
     
     diff=removeoutliers(diff)
 
-    # print(frequency1)
-    # print(frequency2)
-    # print(confidence2)
-    # print(diff)
     netdiff = statistics.mean((abs(x) for x in diff))
     print(netdiff)
     return(netdiff)
@@ -73,12 +67,10 @@ def removeoutliers(list):
     # print(list) 
     return(list)
 
-compareaudios('sampleAudios\mammamiavocals.wav', 'sampleAudios\mammamiavoice.wav')
-
 #calculate a percentage score from 0 - 100 using quadratic regression
 def scaleToScore(netDiff):
-    return round(110 - 1.988*netDiff + 0.007617*pow(netDiff,2), 2)
+    # return round(110 - 1.988*netDiff + 0.007617*pow(netDiff,2), 2)
+    a = 101.304
+    b = -0.0190624
+    return round(a * math.pow(math.e, b * netDiff), 2)
 
-# print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/mammamiavoice.wav')))
-# print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/mammamiabad.wav')))
-# print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/notmm.wav')))
