@@ -431,7 +431,7 @@ def create_record_window():
     re_record_button.grid(row=3, column=1, padx=20, pady=(0, 5))  # Positioned below the Rec/Play button
 
     playFrame = tk.Frame(record_frame, bg="#bfc0e2")
-    playFrame.grid(row=3, column=0, columnspan=2, pady=10)
+    playFrame.grid(row=4, column=0, columnspan=2, pady=10)
 
     label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 16), bg="#bfc0e2", fg="#674188")
     label_file1.grid(row=3, column=0, pady=(0, 5))  # Adjusted columnspan to 1
@@ -570,11 +570,11 @@ def enableRecordingPlayback():
         # Create 2 square buttons
         button1 = tk.Button(playFrame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
                         fg="#F7EFE5", command=lambda: play_file("output.wav"))
-        button1.grid(row=3, column=1, padx=10, pady=5)
+        button1.grid(row=4, column=1, padx=10, pady=5)
 
         button2 = tk.Button(playFrame, text="■", width=3, height=0, font=("Verdana", 20), bg="#674188",
                         fg="#F7EFE5", command=lambda: stop_playback())
-        button2.grid(row=3, column=2, padx=10, pady=5)
+        button2.grid(row=4, column=2, padx=10, pady=5)
 
         # Enable the Save and Analyze button
         save_analyze_button.config(state=tk.NORMAL)
