@@ -186,10 +186,6 @@ def create_results_window():
     fade_in(results_window)
     results_window.mainloop()
 
-def show_main_window():
-    global welcome_window
-    fade_out(welcome_window, create_main_window)
-
 def create_main_window():
     global root
     global label_file1, label_file2, file1_buttons_frame, file2_buttons_frame
@@ -246,12 +242,18 @@ def create_main_window():
                            bg="#4B0082", fg="white")
     button_run.grid(row=4, column=0, columnspan=2, pady=10)
 
+    # Create a frame for buttons at the bottom
+    bottom_frame = tk.Frame(root, bg="lavender")
+    bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
+
+    # Add buttons to bottom_frame
+    back_button = tk.Button(bottom_frame, text="Back",
+                            command=lambda: fade_out(root, show_welcome_window), width=15, height=2,
+                            font=("Helvetica", 24), bg="#4B0082", fg="white")
+    back_button.pack(side=tk.LEFT, padx=10, pady=10)
+
     fade_in(root)
     root.mainloop()
-
-def show_record_window():
-    global welcome_window
-    fade_out(welcome_window, create_record_window)
 
 def create_record_window():
     global record_window
