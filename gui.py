@@ -255,7 +255,7 @@ def show_record_window():
 
 def create_record_window():
     global record_window
-    global label_file1, file1_buttons_frame
+    global label_file1, file_buttons_frame, playFrame
     global input1
     global rec_play_button
     global re_record_button
@@ -293,12 +293,15 @@ def create_record_window():
                                  height=2, font=("Helvetica", 16), bg="#4B0082", fg="white", state=tk.DISABLED)
     re_record_button.grid(row=2, column=1, padx=20, pady=10)  # Positioned below the Rec/Play button
 
+    playFrame = tk.Frame(record_frame, bg="lavender")
+    playFrame.grid(row=3, column=1, pady=10)
+
     global label_file1
     label_file1 = tk.Label(record_frame, text="File 1: None", font=("Helvetica", 24), bg="lavender", fg="#4B0082")
     label_file1.grid(row=2, column=0, pady=5)  # Adjusted columnspan to 1
 
-    file1_buttons_frame = tk.Frame(record_frame, bg="lavender")
-    file1_buttons_frame.grid(row=3, column=0, pady=10, columnspan=2)
+    file_buttons_frame = tk.Frame(record_frame, bg="lavender")
+    file_buttons_frame.grid(row=3, column=0, pady=10, columnspan=2)
 
     # Create a frame for buttons at the bottom
     bottom_frame = tk.Frame(record_window, bg="lavender")
@@ -317,7 +320,6 @@ def create_record_window():
 
     fade_in(record_window)
     record_window.mainloop()
-
 
 def splitAudio2():
     separate_audio(input1,'output/')
@@ -369,8 +371,6 @@ def startRecording():
     # Wait for the recording thread to finish
     # recording_thread.join()
 
-
-
 def record_audio():
         audio = pyaudio.PyAudio()
 
@@ -404,11 +404,21 @@ def record_audio():
             wf.writeframes(b''.join(frames))
 
         print(f"Audio saved as {OUTPUT_FILENAME}")
+        for widget in playFrame.winfo_children():
+            widget.grid_forget()  # Hide existing buttons
+
+        # Create 2 square buttons
+        button1 = tk.Button(playFrame, text="▶", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
+                        fg="white", command=lambda: play_file("output.wav"))
+        button1.grid(row=0, column=1, padx=10, pady=5)
+
+        button2 = tk.Button(playFrame, text="◼", width=3, height=0, font=("Helvetica", 20), bg="#4B0082",
+                        fg="white", command=lambda: stop_playback())
+        button2.grid(row=0, column=2, padx=10, pady=5)
 
         # Enable the Save and Analyze button
         save_analyze_button.config(state=tk.NORMAL)
 
-# Function to stop recording
 def stop_rec():
     global stop_recording
     stop_recording = True
