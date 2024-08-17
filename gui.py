@@ -133,14 +133,18 @@ def analyzeAudio():
     fade_out(loading_window, create_results_window)
 
 
-def add_to_leaderboard(entry_name, entry_score, leaderboard):
+def add_to_leaderboard(entry_name, leaderboard, score_label):
     name = entry_name.get()
-    score = entry_score.get()
 
-    if name and score.isdigit():
-        score = int(score)
+    # Convert the score_label text to an integer for sorting
+    try:
+        score = float(score_label.cget("text"))
+    except ValueError:
+        score = 0
+
+    if name and score >= 0:
         # Create a list of tuples with (score, name)
-        current_entries = [(int(leaderboard.get(idx).split(": ")[1]), leaderboard.get(idx).split(": ")[0])
+        current_entries = [(float(leaderboard.get(idx).split(": ")[1]), leaderboard.get(idx).split(": ")[0])
                            for idx in range(leaderboard.size())]
 
         # Add the new score and name to the list
@@ -152,11 +156,11 @@ def add_to_leaderboard(entry_name, entry_score, leaderboard):
         # Clear the leaderboard and insert sorted entries
         leaderboard.delete(0, tk.END)
         for entry in current_entries:
-            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]}")
+            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f}")
 
         # Clear the input fields after adding to the leaderboard
         entry_name.delete(0, tk.END)
-        entry_score.delete(0, tk.END)
+        score_label.config(text="00.00")
 
 def create_saved_window():
     global saved_window
@@ -180,12 +184,12 @@ def create_saved_window():
     entry_name.grid(row=0, column=1, padx=5, pady=5)
 
     tk.Label(saved_frame, text="Score:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40").grid(row=1, column=0, padx=5, pady=5)
-    entry_score = tk.Entry(saved_frame, font=("Verdana", 18), width=20, bg="#F7EFE5", fg="#674188")
-    entry_score.grid(row=1, column=1, padx=5, pady=5)
+    score_label = tk.Label(saved_frame, text="00.00", font=("Verdana", 18), bg="#bfc0e2", fg="#674188")
+    score_label.grid(row=1, column=1, padx=5, pady=5)
 
     # Pass the widgets to the add_to_leaderboard function
     btn_add = tk.Button(saved_frame, text="Add to Leaderboard",
-                        command=lambda: add_to_leaderboard(entry_name, entry_score, leaderboard),
+                        command=lambda: add_to_leaderboard(entry_name, leaderboard, score_label),
                         font=("Verdana", 18), bg="#674188", fg="#F7EFE5", width=25, height=2)
     btn_add.grid(row=2, column=0, columnspan=2, pady=10)
 
