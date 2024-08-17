@@ -392,7 +392,7 @@ def create_record_window():
     label_instruction.grid(row=0, column=0, columnspan=2, pady=(50,5))  # Adjusted pady to move down
 
     # New button and label side by side
-    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#674188")
+    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#674188", state="disabled", command=getGeneratedLyrics)
     button_example.grid(row=0, column=3, padx=10, pady=(50, 5), sticky='w')  # Positioned to the left
 
     label_above_text = tk.Label(record_frame,
@@ -501,7 +501,6 @@ def searchLyrics():
 
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
 
-# TODO: need a generate lyrics button
 def getGeneratedLyrics():
     global lyrics
     lyrics = getLyrics("output/" + name + "/vocals.wav")
@@ -538,7 +537,7 @@ def processOriginalSong():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    
+    #TODO: enable generate button
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
 
 def upload_fileRec():
