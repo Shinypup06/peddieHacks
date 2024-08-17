@@ -29,7 +29,7 @@ def compareaudios(file1, file2):
     diff = []
 
     for x in range (0,min(len(frequency1),len(frequency2))):
-        frequency1[x]=removeoctave(frequency1[x],frequency2[x])
+        # frequency1[x]=removeoctave(frequency1[x],frequency2[x])
         if abs(frequency1[x]-frequency2[x])<=2:
             temp = 0
         elif frequency2[x]>frequency1[x]:
@@ -46,9 +46,9 @@ def compareaudios(file1, file2):
 
     # print(frequency1)
     # print(frequency2)
-    print(diff)
+    # print(diff)
     netdiff = statistics.mean((abs(x) for x in diff))
-    print(netdiff)
+    # print(netdiff)
     return(diff)
 
 def removeoctave(fr1, fr2):
@@ -59,22 +59,22 @@ def removeoctave(fr1, fr2):
         l = math.floor(math.log(fr2/fr1,2))
         return (fr1*pow(2,l))
 
-def pitchattime(time, frequency):
-    pitches = []
-    prevf = frequency[0]
-    prevt = time[0]
-    temp = 0
-    cnt = 0
-    for x in range(0,len(frequency)):
-        temp += frequency[x]
-        cnt += 1
-        if time[x]-prevt>0.25:
-            temp/=cnt
-            pitches.append([temp])
-            prevf=temp
-            temp = 0
-            cnt = 0
-            prevt=time[x]
-    return pitches
+# def pitchattime(time, frequency):
+#     pitches = []
+#     prevf = frequency[0]
+#     prevt = time[0]
+#     temp = 0
+#     cnt = 0
+#     for x in range(0,len(frequency)):
+#         temp += frequency[x]
+#         cnt += 1
+#         if time[x]-prevt>0.25:
+#             temp/=cnt
+#             pitches.append([time[x],temp])
+#             prevf=temp
+#             temp = 0
+#             cnt = 0
+#             prevt=time[x]
+#     return pitches
 
 compareaudios(1,1)
