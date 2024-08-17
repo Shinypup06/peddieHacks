@@ -5,3 +5,4 @@
 - tkinter
 - pyaudio
 - pygame
+- crepe

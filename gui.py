@@ -3,6 +3,7 @@ from tkinter import filedialog
 import time
 import threading
 from spleeter.separator import Separator
+from pydub import AudioSegment
 import os
 import warnings
 import wave
@@ -426,6 +427,10 @@ def record_audio():
         for widget in playFrame.winfo_children():
             widget.grid_forget()  # Hide existing buttons
 
+        # Adjust volume so that track volume and recorded volume are not obnoxiously different
+        # third param is target volume in dBFS
+        adjust_volume(OUTPUT_FILENAME, OUTPUT_FILENAME, -16.0)
+
         # Create 2 square buttons
         button1 = tk.Button(playFrame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
                         fg="#F7EFE5", command=lambda: play_file("output.wav"))
@@ -442,6 +447,14 @@ def stop_rec():
     global stop_recording
     stop_recording = True
     stop_playback()
+
+# adjusts volume to a certain target dBFS
+def adjust_volume(input, output, target_dBFS):
+    audio = AudioSegment.from_file(input)
+    change_in_dBFS = target_dBFS - audio.dBFS
+    adjusted_audio = audio.apply_gain(change_in_dBFS)
+    adjusted_audio.export(output, format='wav')
+
 
 def show_welcome_window():
     global welcome_window
