@@ -6,7 +6,6 @@ from scipy.io import wavfile
 import tensorflow as tf
 
 
-
 def combinedata(n,list):
     newlist = []
     temp = 0
@@ -73,11 +72,12 @@ def removeoutliers(list):
     # print(list) 
     return(list)
 
-compareaudios('sampleAudios\mammamiavocals.wav', 'sampleAudios\mammamiavoice.wav')
-
 #calculate a percentage score from 0 - 100 using quadratic regression
 def scaleToScore(netDiff):
-    return round(110 - 1.988*netDiff + 0.007617*pow(netDiff,2), 2)
+    # return round(110 - 1.988*netDiff + 0.007617*pow(netDiff,2), 2)
+    a = 101.304
+    b = -0.0190624
+    return round(a * math.pow(math.e, b * netDiff), 2)
 
 # print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/mammamiavoice.wav')))
 # print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/mammamiabad.wav')))
