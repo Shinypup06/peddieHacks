@@ -13,13 +13,34 @@ from record import *
 pygame.init()
 pygame.mixer.init()
 
+<<<<<<< HEAD
+=======
+
+def load_images():
+    global staff
+    # Load the image
+    staff = tk.PhotoImage(file=r"images\top.png")  # Replace with the path to your image file
+
+def separate_audio(input_file, output_dir):
+
+    # 2 stems splits into vocal and accompaniment
+    separator = Separator('spleeter:2stems')
+
+    # Create an output directory
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Perform separation
+    separator.separate_to_file(input_file, output_dir)
+
+>>>>>>> 94a97fbaa330b9b29966c21c9203b980c2fa9f24
 def create_header(window, title):
     # Create a header frame with #F7EFE5 background
     header_frame = tk.Frame(window, bg="#674188", height=50)
     header_frame.pack(fill=tk.X, side=tk.TOP)
 
     # Add header label with indigo text
-    header_label = tk.Label(header_frame, text="Cool Name", font=("Verdana", 16, "bold"), bg="#674188", fg="#F7EFE5")
+    header_label = tk.Label(header_frame, text="Karacroakie", font=("Verdana", 16, "bold"), bg="#674188", fg="#F7EFE5")
     header_label.pack(pady=10)
 
 def upload_file1():
@@ -35,7 +56,7 @@ def upload_file1():
         print(f"Input1: {input1}")
         show_buttons1(file1_buttons_frame)
         update_run_button_state()
-        
+
 def upload_file2():
     global input2
     file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
@@ -58,7 +79,7 @@ def show_buttons1(frame):
                        fg="#F7EFE5", command=lambda: play_file(input1))
     button1.grid(row=0, column=1, padx=10, pady=5)
 
-    button2 = tk.Button(frame, text="◼", width=3, height=0, font=("Verdana", 20), bg="#674188",
+    button2 = tk.Button(frame, text="■", width=3, height=0, font=("Verdana", 20), bg="#674188",
                        fg="#F7EFE5", command=lambda: stop_playback())
     button2.grid(row=0, column=2, padx=10, pady=5)
 
@@ -71,7 +92,7 @@ def show_buttons2(frame):
                        fg="#F7EFE5", command=lambda: play_file(input2))
     button1.grid(row=0, column=1, padx=10, pady=5)
 
-    button2 = tk.Button(frame, text="◼", width=3, height=0, font=("Verdana", 20), bg="#674188",
+    button2 = tk.Button(frame, text="■", width=3, height=0, font=("Verdana", 20), bg="#674188",
                        fg="#F7EFE5", command=lambda: stop_playback())
     button2.grid(row=0, column=2, padx=10, pady=5)
 
@@ -191,24 +212,24 @@ def create_main_window():
     input2 = None
 
     root = tk.Tk()
-    root.title("Upload MP3 Files")
+    root.title("Upload WAV Files")
     root.geometry("1920x1080")  # Set the window size to 1920x1080 pixels
     root.attributes("-alpha", 0.0)  # Start with invisible window
 
     # Set the background color for the entire window
     root.configure(bg="#bfc0e2")
-    create_header(root, "Upload MP3 Files")
+    create_header(root, "Upload WAV Files")
 
 
     main_frame = tk.Frame(root, bg="#bfc0e2")
     main_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
 
-    label_instruction = tk.Label(main_frame, text="Please upload the MP3 files below:", font=("Verdana", 24),
+    label_instruction = tk.Label(main_frame, text="Please upload the WAV files below:", font=("Verdana", 24),
                                  bg="#bfc0e2", fg="#674188")
     label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 
     # Create a grid for the buttons
-    button_upload1 = tk.Button(main_frame, text="Upload MP3 File 1", command=upload_file1, width=19, height=2,
+    button_upload1 = tk.Button(main_frame, text="Upload original song", command=upload_file1, width=19, height=2,
                                font=("Verdana", 16), bg="#F7EFE5", fg="#674188")
     button_upload1.grid(row=1, column=0, padx=20, pady=10)
 
@@ -219,7 +240,7 @@ def create_main_window():
     file1_buttons_frame = tk.Frame(main_frame, bg="#bfc0e2")
     file1_buttons_frame.grid(row=3, column=0, pady=10)
 
-    button_upload2 = tk.Button(main_frame, text="Upload MP3 File 2", command=upload_file2, width=19, height=2,
+    button_upload2 = tk.Button(main_frame, text="Upload your singing", command=upload_file2, width=19, height=2,
                                font=("Verdana", 16), bg="#F7EFE5", fg="#674188")
     button_upload2.grid(row=1, column=1, padx=20, pady=10)
 
@@ -281,7 +302,7 @@ def create_record_window():
     record_frame = tk.Frame(record_window, bg="#bfc0e2")
     record_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
 
-    label_instruction = tk.Label(record_frame, text="Please upload the MP3 files below:", font=("Verdana", 24),
+    label_instruction = tk.Label(record_frame, text="Please upload the original song WAV file below:", font=("Verdana", 24),
                                  bg="#bfc0e2", fg="#674188")
     label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 
@@ -292,7 +313,7 @@ def create_record_window():
     text_block.insert(tk.END, default_text)
 
     # Create a grid for the buttons
-    button_upload1 = tk.Button(record_frame, text="Upload MP3 File 1", command=upload_fileRec, width=19, height=2,
+    button_upload1 = tk.Button(record_frame, text="Upload original song", command=upload_fileRec, width=19, height=2,
                                font=("Verdana", 16), bg="#F7EFE5", fg="#674188")
     button_upload1.grid(row=1, column=0, padx=20, pady=10)
 
@@ -324,7 +345,7 @@ def create_record_window():
                                     font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
     back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
-    save_analyze_button = tk.Button(bottom_frame, text="Save and Analyze",
+    save_analyze_button = tk.Button(bottom_frame, text="Save & Analyze",
                                     command=lambda: fade_out(record_window, create_results_window), width=15, height=2,
                                     font=("Verdana", 24), bg="#674188", fg="#F7EFE5", state=tk.DISABLED)
     save_analyze_button.pack(side=tk.RIGHT, padx=10, pady=10)  # Positioned to the right side of the bottom frame
@@ -378,7 +399,7 @@ def enableRecordingPlayback():
                         fg="#F7EFE5", command=lambda: play_file("output.wav"))
         button1.grid(row=0, column=1, padx=10, pady=5)
 
-        button2 = tk.Button(playFrame, text="◼", width=3, height=0, font=("Verdana", 20), bg="#674188",
+        button2 = tk.Button(playFrame, text="■", width=3, height=0, font=("Verdana", 20), bg="#674188",
                         fg="#F7EFE5", command=lambda: stop_playback())
         button2.grid(row=0, column=2, padx=10, pady=5)
 
@@ -399,15 +420,15 @@ def show_welcome_window():
     welcome_frame = tk.Frame(welcome_window, bg="#bfc0e2")
     welcome_frame.place(relx=0.5, rely=0.5, anchor='center')
 
-    welcome_label = tk.Label(welcome_frame, text="You can upload an existing file of your singing or record something in the app", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
+    welcome_label = tk.Label(welcome_frame, text="Karacroakie gives enhanced AI karaoke feedback \n Select one of the two options to evaluate your singing skills", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
     welcome_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))
 
 
     # Create a frame for the Record button and its label
     record_frame = tk.Frame(welcome_frame, bg="#bfc0e2")
-    record_frame.grid(row=5, column=1, padx=20)
+    record_frame.grid(row=1, column=1, padx=20, pady=(20, 40))
 
-    record_label = tk.Label(record_frame, text="Record something new:", font=("Verdana", 18), bg="#bfc0e2",
+    record_label = tk.Label(record_frame, text="Upload a WAV file of any song \n Record your voice with the \n automatically separated instrumentals", font=("Verdana", 18), bg="#bfc0e2",
                             fg="#674188")
     record_label.pack(pady=10)
 
@@ -418,9 +439,9 @@ def show_welcome_window():
 
     # Create a frame for the Analyze button and its label
     analyze_frame = tk.Frame(welcome_frame, bg="#bfc0e2")
-    analyze_frame.grid(row=5, column=0, padx=20)
+    analyze_frame.grid(row=1, column=0, padx=20, pady=(20,40))
 
-    analyze_label = tk.Label(analyze_frame, text="Analyze existing files:", font=("Verdana", 18), bg="#bfc0e2",
+    analyze_label = tk.Label(analyze_frame, text="Have a recording of your singing? \n Upload the original song and \n your recording as WAV files", font=("Verdana", 18), bg="#bfc0e2",
                              fg="#674188")
     analyze_label.pack(pady=10)
 
@@ -429,9 +450,13 @@ def show_welcome_window():
                                font=("Verdana", 18), bg="#674188", fg="#F7EFE5")
     analyze_button.pack()
 
+
+
+
     fade_in(welcome_window)
     welcome_window.mainloop()
 
 # Create the initial welcome window
 if __name__ == "__main__":
     show_welcome_window()
+

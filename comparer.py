@@ -43,9 +43,22 @@ def compareaudios(file1, file2):
         # diff.append(temp*confidence2[x])
         diff.append(temp)
 
+<<<<<<< HEAD
     netdiff = statistics.mean((abs(x) for x in diff))
     print(netdiff)
     return(netdiff)
+=======
+    # for x in range (0,len(diff)):
+    #     if abs(diff[x])>100:
+    #         diff[x]=0
+
+    # print(frequency1)
+    # print(frequency2)
+    # print(diff)
+    netdiff = statistics.mean((abs(x) for x in diff))
+    # print(netdiff)
+    return(diff)
+>>>>>>> 94a97fbaa330b9b29966c21c9203b980c2fa9f24
 
 def removeoctave(fr1, fr2):
     if fr1>fr2:
@@ -55,23 +68,23 @@ def removeoctave(fr1, fr2):
         l = math.floor(math.log(fr2/fr1,2))
         return (fr1*pow(2,l))
 
-def pitchattime(time, frequency):
-    pitches = []
-    prevf = frequency[0]
-    prevt = time[0]
-    temp = 0
-    cnt = 0
-    for x in range(0,len(frequency)):
-        temp += frequency[x]
-        cnt += 1
-        if time[x]-prevt>0.25:
-            temp/=cnt
-            pitches.append([temp])
-            prevf=temp
-            temp = 0
-            cnt = 0
-            prevt=time[x]
-    return pitches
+# def pitchattime(time, frequency):
+#     pitches = []
+#     prevf = frequency[0]
+#     prevt = time[0]
+#     temp = 0
+#     cnt = 0
+#     for x in range(0,len(frequency)):
+#         temp += frequency[x]
+#         cnt += 1
+#         if time[x]-prevt>0.25:
+#             temp/=cnt
+#             pitches.append([time[x],temp])
+#             prevf=temp
+#             temp = 0
+#             cnt = 0
+#             prevt=time[x]
+#     return pitches
 
 #calculate a percentage score from 0 - 100
 def scaleToScore(netDiff):
