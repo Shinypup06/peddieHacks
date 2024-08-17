@@ -37,7 +37,6 @@ def create_header(window, title):
     header_label = tk.Label(header_frame, text="Cool Name", font=("Helvetica", 16, "bold"), bg="white", fg="#4B0082")
     header_label.pack(pady=10)
 
-
 def upload_file1():
     global input1
     file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
@@ -49,7 +48,6 @@ def upload_file1():
         label_file1.config(text=f"File 1: {file_name}")
         print(f"Input1: {input1}")
         show_buttons1(file1_buttons_frame)
-
 
 def upload_file2():
     global input2
@@ -69,7 +67,6 @@ def play_file(input):
 
 def stop_playback():
     pygame.mixer.music.stop()
-
 
 def show_buttons1(frame):
     for widget in frame.winfo_children():
@@ -114,7 +111,6 @@ def fade_out(window, callback):
 
     step()
 
-
 def fade_in(window):
     alpha = 0.0
 
@@ -130,7 +126,6 @@ def fade_in(window):
             window.deiconify()  # Show the window
 
     step()
-
 
 def show_results():
     global root
@@ -160,7 +155,6 @@ def show_loading_screen():
 
     # Run the long task in a separate thread to prevent GUI freezing
     threading.Thread(target=splitAudio).start()
-
 
 def create_results_window():
     global results_window
@@ -192,11 +186,9 @@ def create_results_window():
     fade_in(results_window)
     results_window.mainloop()
 
-
 def show_main_window():
     global welcome_window
     fade_out(welcome_window, create_main_window)
-
 
 def create_main_window():
     global root
@@ -313,13 +305,8 @@ def create_record_window():
     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
 
     # Add buttons to bottom_frame
-<<<<<<< HEAD
     back_button = tk.Button(bottom_frame, text="Back",
-                                    command=go_to_welcome_screen, width=15, height=2,
-=======
-    back_button = tk.Button(bottom_frame, text="Back to Welcome Screen",
                                     command=lambda: fade_out(record_window, show_welcome_window), width=15, height=2,
->>>>>>> 3003743e7fadd171e0e7219807bc590adc41beff
                                     font=("Helvetica", 24), bg="#4B0082", fg="white")
     back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
@@ -430,7 +417,6 @@ def stop_rec():
 def show_welcome_window():
     global welcome_window
     global results_window
-
 
     welcome_window = tk.Tk()
     welcome_window.title("Welcome")

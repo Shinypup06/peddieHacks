@@ -1,4 +1,4 @@
-from spleeter.separator import Separator # type: ignore
+from spleeter.separator import Separator
 import os
 import warnings
 

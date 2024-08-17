@@ -10,7 +10,6 @@ def get_audio_length(file_path):
         duration = frames / float(rate)
     return duration
 
-
 # Parameters
 FORMAT = pyaudio.paInt16  # Format of sampling
 CHANNELS = 1  # Number of channels: 1 for mono, 2 for stereo
