@@ -13,27 +13,6 @@ from record import *
 pygame.init()
 pygame.mixer.init()
 
-<<<<<<< HEAD
-=======
-
-def load_images():
-    global staff
-    # Load the image
-    staff = tk.PhotoImage(file=r"images\top.png")  # Replace with the path to your image file
-
-def separate_audio(input_file, output_dir):
-
-    # 2 stems splits into vocal and accompaniment
-    separator = Separator('spleeter:2stems')
-
-    # Create an output directory
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    # Perform separation
-    separator.separate_to_file(input_file, output_dir)
-
->>>>>>> 94a97fbaa330b9b29966c21c9203b980c2fa9f24
 def create_header(window, title):
     # Create a header frame with #F7EFE5 background
     header_frame = tk.Frame(window, bg="#674188", height=50)

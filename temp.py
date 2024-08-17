@@ -1,6 +1,6 @@
 from comparer import *
 
 def compar():
-    print(compareaudios("output/mammamia/vocals.wav", "C:/Dev/peddieHacks/mammamiabad.wav"))
+    print(compareaudios("output/mammamia/vocals.wav", "mammamiabad.wav"))
 
 compar()
