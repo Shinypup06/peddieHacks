@@ -313,26 +313,24 @@ def create_record_window():
     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
 
     # Add buttons to bottom_frame
+<<<<<<< HEAD
     back_button = tk.Button(bottom_frame, text="Back",
                                     command=go_to_welcome_screen, width=15, height=2,
+=======
+    back_button = tk.Button(bottom_frame, text="Back to Welcome Screen",
+                                    command=lambda: fade_out(record_window, show_welcome_window), width=15, height=2,
+>>>>>>> 3003743e7fadd171e0e7219807bc590adc41beff
                                     font=("Helvetica", 24), bg="#4B0082", fg="white")
     back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     save_analyze_button = tk.Button(bottom_frame, text="Save and Analyze",
-                                    command=show_results_window, width=15, height=2,
+                                    command=lambda: fade_out(record_window, create_results_window), width=15, height=2,
                                     font=("Helvetica", 24), bg="#4B0082", fg="white", state=tk.DISABLED)
     save_analyze_button.pack(side=tk.RIGHT, padx=10, pady=10)  # Positioned to the right side of the bottom frame
 
     fade_in(record_window)
     record_window.mainloop()
 
-def show_results_window():
-    record_window.destroy()  # Close the current window
-    create_results_window()
-
-def go_to_welcome_screen():
-    record_window.destroy()  # Close the current window
-    show_welcome_window()  # Call function to create the welcome screen
 
 def splitAudio2():
     separate_audio(input1,'output/')
@@ -432,8 +430,7 @@ def stop_rec():
 def show_welcome_window():
     global welcome_window
     global results_window
-    if 'results_window' in globals():
-        results_window.destroy()
+
 
     welcome_window = tk.Tk()
     welcome_window.title("Welcome")
