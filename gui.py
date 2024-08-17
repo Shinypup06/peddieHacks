@@ -399,7 +399,7 @@ def create_record_window():
     label_above_text.grid(row=0, column=2, pady=(50, 5), sticky='w')  # Adjusted pady to move down
 
     # Create a block of editable text
-    text_block = tk.Text(record_frame, wrap='word', height=5, width=25, font=("Verdana", 18), bg="#F7EFE5",
+    text_block = tk.Text(record_frame, wrap='word', height=5, width=30, font=("Verdana", 18), bg="#F7EFE5",
                          fg="#674188")
     text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')  # Adjusted pady to move down
 
@@ -435,7 +435,7 @@ def create_record_window():
     middle_frame = tk.Frame(record_window, bg="#bfc0e2")
     middle_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-    label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 12), bg="#bfc0e2", fg="#0a0b40")
+    label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
     label_blank.grid(row=0, column=0, padx=10, pady=10, sticky='e')
 
     # Song input

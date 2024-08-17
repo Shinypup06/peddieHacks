@@ -2,7 +2,7 @@ import requests
 import json
 import re
 
-def getlyrics(artist, track):
+def getInternetLyrics(artist, track):
     # artist = 'Fall Out Boy'
     # track = 'Sugar, We\'re Going Down'
 
@@ -15,6 +15,6 @@ def getlyrics(artist, track):
         lyrics = "No lyrics found."
 
     # print(r.content)
-    print(lyrics)
+    return (lyrics)
 
-getlyrics('Casey Edwards','Bury the Light')
+# getlyrics('Casey Edwards','Bury the Light')

@@ -73,8 +73,12 @@ def removeoutliers(list):
     # print(list) 
     return(list)
 
-#calculate a percentage score from 0 - 100 using quadratic regression 111.8 - 2.015x + 0.007698x^2
+compareaudios('sampleAudios\mammamiavocals.wav', 'sampleAudios\mammamiavoice.wav')
+
+#calculate a percentage score from 0 - 100 using quadratic regression
 def scaleToScore(netDiff):
-    return round(111 - 2.015*netDiff + 0.007698*pow(netDiff,2), 2)
+    return round(110 - 1.988*netDiff + 0.007617*pow(netDiff,2), 2)
 
-
+# print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/mammamiavoice.wav')))
+# print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/mammamiabad.wav')))
+# print(scaleToScore(compareaudios('sampleAudios/mammamiavocals.wav', 'sampleAudios/notmm.wav')))
