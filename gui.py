@@ -350,6 +350,8 @@ def update_run_button_state():
     else:
         button_run.config(state=tk.DISABLED)  # Disable the Run button
 
+import tkinter as tk
+
 def create_record_window():
     global record_window
     global label_file1, file_buttons_frame, playFrame
@@ -370,38 +372,44 @@ def create_record_window():
     record_window.configure(bg="#bfc0e2")
     create_header(record_window, "Record")
 
-    record_frame = tk.Frame(record_window, bg="#bfc0e2")
-    record_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
+    # Create a frame to center the top frame
+    center_frame = tk.Frame(record_window, bg="#bfc0e2")
+    center_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-    label_instruction = tk.Label(record_frame, text="Please upload a WAV file of\nthe original song below:", font=("Verdana", 24),
+    # Create a frame for the top half of the window
+    record_frame = tk.Frame(center_frame, bg="#bfc0e2")
+    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(70, 0))
+
+    label_instruction = tk.Label(record_frame, text="Please upload a WAV file of\nthe original song below:",
+                                 font=("Verdana", 24),
                                  bg="#bfc0e2", fg="#0a0b40")
-    label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
+    label_instruction.grid(row=0, column=0, columnspan=2, pady=(50,5))  # Adjusted pady to move down
 
     # New label directly above the text block
-    label_above_text = tk.Label(record_frame, text="         Use the generated lyrics or\n         paste from the internet:", font=("Verdana", 24),
+    label_above_text = tk.Label(record_frame,
+                                text="         Use the generated lyrics or\n         paste from the internet:",
+                                font=("Verdana", 24),
                                 bg="#bfc0e2", fg="#0a0b40")
-    label_above_text.grid(row=0, column=2, pady=10, sticky='w')  # Position above the text block
+    label_above_text.grid(row=0, column=2, pady=(50, 5), sticky='w')  # Adjusted pady to move down
 
     # Create a block of editable text
-    text_block = tk.Text(record_frame, wrap='word', height=10, width=40, font=("Verdana", 18), bg="#F7EFE5",
+    text_block = tk.Text(record_frame, wrap='word', height=5, width=30, font=("Verdana", 18), bg="#F7EFE5",
                          fg="#674188")
-    text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')
+    text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')  # Adjusted pady to move down
 
     text_block.insert(tk.END, default_text)
-
-
 
     # Create a grid for the buttons
     button_upload1 = tk.Button(record_frame, text="Upload original song", command=upload_fileRec, width=19, height=2,
                                font=("Verdana", 16), bg="#F7EFE5", fg="#674188")
     button_upload1.grid(row=1, column=0, padx=20, pady=10)
 
-
-
-    rec_play_button = tk.Button(record_frame, text="Rec/Play", command=lambda: startRecording(name, "output.wav", enableRecordingPlayback, input1, re_record_button.config(state=tk.NORMAL)), width=15, height=2,
+    rec_play_button = tk.Button(record_frame, text="Rec/Play",
+                                command=lambda: startRecording(name, "output.wav", enableRecordingPlayback, input1,
+                                                               re_record_button.config(state=tk.NORMAL)), width=15,
+                                height=2,
                                 font=("Verdana", 16), bg="#F7EFE5", fg="black",
                                 state=tk.DISABLED)  # Disabled by default
-
     rec_play_button.grid(row=1, column=1, padx=20, pady=10)  # Positioned to the right of the upload button
 
     re_record_button = tk.Button(record_frame, text="Re-record", command=lambda: stop_rec(), width=15,
@@ -416,6 +424,29 @@ def create_record_window():
 
     file_buttons_frame = tk.Frame(record_frame, bg="#bfc0e2")
     file_buttons_frame.grid(row=3, column=1, pady=10, columnspan=2)
+
+    # Create a frame for the middle section
+    middle_frame = tk.Frame(record_window, bg="#bfc0e2")
+    middle_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
+    label_blank.grid(row=0, column=0, padx=10, pady=10, sticky='e')
+
+    # Song input
+    label_song = tk.Label(middle_frame, text="Song:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
+    label_song.grid(row=1, column=0, padx=10, pady=10, sticky='e')
+    song_entry = tk.Entry(middle_frame, font=("Verdana", 18), width=30, bg="#F7EFE5", fg="#674188")  # Set width to make it shorter
+    song_entry.grid(row=1, column=1, padx=10, pady=10, sticky='w')
+
+    # Artist input
+    label_artist = tk.Label(middle_frame, text="Artist:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
+    label_artist.grid(row=2, column=0, padx=10, pady=10, sticky='e')
+    artist_entry = tk.Entry(middle_frame, font=("Verdana", 18), width=30, bg="#F7EFE5", fg="#674188")  # Set width to make it shorter
+    artist_entry.grid(row=2, column=1, padx=10, pady=10, sticky='w')
+
+    # Search button
+    search_button = tk.Button(middle_frame, text="Search", command=print("searched"), font=("Verdana", 20), bg="#674188", fg="#F7EFE5")
+    search_button.grid(row=3, column=0, columnspan=2, pady=20)
 
     # Create a frame for buttons at the bottom
     bottom_frame = tk.Frame(record_window, bg="#bfc0e2")
@@ -440,8 +471,12 @@ def create_record_window():
     record_frame.grid_columnconfigure(1, weight=1)
     record_frame.grid_columnconfigure(2, weight=1)
 
+    middle_frame.grid_columnconfigure(0, weight=1)
+    middle_frame.grid_columnconfigure(1, weight=1)
+
     fade_in(record_window)
     record_window.mainloop()
+
 
 def processOriginalSong():
     global lyrics
