@@ -1,6 +1,7 @@
 from spleeter.separator import Separator
-import os
-import warnings
+import warnings, sys, os
+import tensorflow as tf
+from gui import *
 
 #filter out warnings (idk if it actually does filter out warnings though)
 warnings.filterwarnings('ignore')
@@ -18,7 +19,6 @@ def separate_audio(input_file, output_dir):
     separator.separate_to_file(input_file, output_dir)
 
 if __name__ == "__main__":
-    input = 'sampleAudios/mammamia.mp3'
-    output = 'output/'
-
-    separate_audio(input, output)
+    input_file = sys.argv[1]
+    output_dir = sys.argv[2]
+    separate_audio(input_file, output_dir)

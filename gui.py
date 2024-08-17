@@ -1,35 +1,17 @@
 import tkinter as tk
 from tkinter import filedialog
-import time
 import threading
-from spleeter.separator import Separator
-from pydub import AudioSegment
-import os
-import warnings
-import wave
-import pyaudio
 import pygame
-import whisper
-
-
-#filter out warnings (idk if it actually does filter out warnings though)
-warnings.filterwarnings('ignore')
+import subprocess, multiprocessing
+from comparer import *
+from splitter import *
+from sound import *
+from lyricReader import *
+from record import *
 
 #use pygame mixer for sound playback
 pygame.init()
 pygame.mixer.init()
-
-def separate_audio(input_file, output_dir):
-
-    # 2 stems splits into vocal and accompaniment
-    separator = Separator('spleeter:2stems')
-
-    # Create an output directory
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    # Perform separation
-    separator.separate_to_file(input_file, output_dir)
 
 def create_header(window, title):
     # Create a header frame with #F7EFE5 background
@@ -41,7 +23,7 @@ def create_header(window, title):
     header_label.pack(pady=10)
 
 def upload_file1():
-    global input1
+    global input1, name
     file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
     if file_path:
         # Extract and display file name
@@ -49,6 +31,7 @@ def upload_file1():
         input1 = file_path
         global label_file1
         label_file1.config(text=f"File 1: {file_name}")
+        name = file_name[:-4]
         print(f"Input1: {input1}")
         show_buttons1(file1_buttons_frame)
         update_run_button_state()
@@ -65,13 +48,6 @@ def upload_file2():
         print(f"Input2: {input2}")
         show_buttons2(file2_buttons_frame)
         update_run_button_state()
-
-def play_file(input):
-    pygame.mixer.music.load(input)
-    pygame.mixer.music.play()
-
-def stop_playback():
-    pygame.mixer.music.stop()
 
 def show_buttons1(frame):
     for widget in frame.winfo_children():
@@ -136,9 +112,24 @@ def show_results():
     global root
     fade_out(root, show_loading_screen)
 
-def splitAudio():
-    separate_audio(input1,'output/')
-    print("done separating audio")
+def splitAudio(input, output):
+    subprocess.run(["python", "splitter.py", input, output])
+
+def analyzeAudio():
+    global score
+
+    print("Original Vocals: " + "output/" + name + "/vocals.wav")
+    print("Recorded Vocals: " + input2)
+
+    # Create a new process for Spleeter
+    spleeter_process = multiprocessing.Process(target=splitAudio, args=(input1, "output/"))
+    print("Running Spleeter...")
+    spleeter_process.start()
+    
+    # Wait for the Spleeter process to finish
+    spleeter_process.join()
+
+    score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", input2))
     fade_out(loading_window, create_results_window)
 
 def show_loading_screen():
@@ -159,7 +150,7 @@ def show_loading_screen():
 
 
     # Run the long task in a separate thread to prevent GUI freezing
-    threading.Thread(target=splitAudio).start()
+    threading.Thread(target=analyzeAudio).start()
 
 def create_results_window():
     global results_window
@@ -175,7 +166,7 @@ def create_results_window():
     results_frame = tk.Frame(results_window, bg="#bfc0e2")
     results_frame.place(relx=0.5, rely=0.5, anchor='center')  # Center the frame
 
-    results_label = tk.Label(results_frame, text="Here are the results of the processing:", font=("Verdana", 24),
+    results_label = tk.Label(results_frame, text=f"Your Pitch Accuracy Score: {score}%", font=("Verdana", 24),
                              bg="#bfc0e2", fg="#674188")
     results_label.pack(pady=20)
 
@@ -262,7 +253,6 @@ def create_main_window():
     root.mainloop()
 
 def update_run_button_state():
-    """Enable or disable the Run button based on file upload status."""
     if input1 and input2:
         button_run.config(state=tk.NORMAL)  # Enable the Run button
     else:
@@ -275,7 +265,8 @@ def create_record_window():
     global rec_play_button
     global re_record_button
     global save_analyze_button
-    default_text = "default"
+    global text_block
+    default_text = "Your lyrics will show up here after you upload your song! Feel free to change them. Lyric detection is still under development."
     input1 = None
 
     record_window = tk.Tk()
@@ -305,7 +296,7 @@ def create_record_window():
                                font=("Verdana", 16), bg="#F7EFE5", fg="#674188")
     button_upload1.grid(row=1, column=0, padx=20, pady=10)
 
-    rec_play_button = tk.Button(record_frame, text="Rec/Play", command=startRecording, width=15, height=2,
+    rec_play_button = tk.Button(record_frame, text="Rec/Play", command=lambda: startRecording(name, "output.wav", enableRecordingPlayback, input1, re_record_button.config(state=tk.NORMAL)), width=15, height=2,
                                 font=("Verdana", 16), bg="#F7EFE5", fg="black",
                                 state=tk.DISABLED)  # Disabled by default
     rec_play_button.grid(row=1, column=1, padx=20, pady=10)  # Positioned to the right of the upload button
@@ -349,12 +340,16 @@ def create_record_window():
     fade_in(record_window)
     record_window.mainloop()
 
-def splitAudio2():
+def processOriginalSong():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    lyrics = whisper.load_model("base").transcribe("output/" + name + "/vocals.wav")["text"]
-    print(lyrics)
+    lyrics = getLyrics("output/" + name + "/vocals.wav")
+    
+    # Insert generated lyrics into the lyrics box
+    text_block.delete('1.0', tk.END)
+    text_block.insert(tk.END, lyrics)
+
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
 
 def upload_fileRec():
@@ -370,79 +365,13 @@ def upload_fileRec():
         print(f"Input1: {input1}")
         print(f"fileName: {name}")
 
-        # Run the long task in a separate thread to prevent GUI freezing
-        threading.Thread(target=splitAudio2).start()
+        # Split audio and get lyrics in a separate thread to prevent GUI freezing
+        threading.Thread(target=processOriginalSong).start()
 
-def get_audio_length(file_path):
-    with wave.open(file_path, 'rb') as wf:
-        frames = wf.getnframes()
-        rate = wf.getframerate()
-        duration = frames / float(rate)
-    return duration
-
-def startRecording():
-    global FORMAT, CHANNELS, RATE, CHUNK, RECORD_SECONDS, OUTPUT_FILENAME, stop_recording
-
-    # Parameters
-    FORMAT = pyaudio.paInt16  # Format of sampling
-    CHANNELS = 1  # Number of channels: 1 for mono, 2 for stereo
-    RATE = 44100  # Sampling rate: 44100 samples per second
-    CHUNK = 1024  # Number of audio frames per buffer
-    RECORD_SECONDS = get_audio_length(input1)  # Max duration of recording in seconds
-    OUTPUT_FILENAME = "output.wav"  # Output file name
-
-    # Global variable to control recording, set to true when re-record is clicked
-    stop_recording = False
-
-    # Start recording audio in a separate thread
-    recording_thread = threading.Thread(target=record_audio)
-    recording_thread.start()
-
-    # Wait for the recording thread to finish
-    re_record_button.config(state=tk.NORMAL)  # Enable the Re-record button
-    # recording_thread.join()
-
-def record_audio():
-        audio = pyaudio.PyAudio()
-
-        # plays the spliced audio accompaniment
-        play_file("output/" + name + "/accompaniment.wav")
-
-        # Start Recording
-        stream = audio.open(format=FORMAT, channels=CHANNELS,
-                            rate=RATE, input=True,
-                            frames_per_buffer=CHUNK)
-        print("Recording...")
-
-        frames = []
-        start_time = time.time()
-
-        #keep recording until backtrack ends OR until user hits re-record
-        while not stop_recording and (time.time() - start_time) < RECORD_SECONDS:
-            data = stream.read(CHUNK)
-            frames.append(data)
-
-        # Stop Recording
-        stream.stop_stream()
-        stream.close()
-        audio.terminate()
-
-        print("Finished recording")
-
-        # Save the recorded data as a WAV file
-        with wave.open(OUTPUT_FILENAME, 'wb') as wf:
-            wf.setnchannels(CHANNELS)
-            wf.setsampwidth(audio.get_sample_size(FORMAT))
-            wf.setframerate(RATE)
-            wf.writeframes(b''.join(frames))
-
-        print(f"Audio saved as {OUTPUT_FILENAME}")
+def enableRecordingPlayback():
+        
         for widget in playFrame.winfo_children():
             widget.grid_forget()  # Hide existing buttons
-
-        # Adjust volume so that track volume and recorded volume are not obnoxiously different
-        # third param is target volume in dBFS
-        adjust_volume(OUTPUT_FILENAME, OUTPUT_FILENAME, -16.0)
 
         # Create 2 square buttons
         button1 = tk.Button(playFrame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
@@ -455,19 +384,6 @@ def record_audio():
 
         # Enable the Save and Analyze button
         save_analyze_button.config(state=tk.NORMAL)
-
-def stop_rec():
-    global stop_recording
-    stop_recording = True
-    stop_playback()
-
-# adjusts volume to a certain target dBFS
-def adjust_volume(input, output, target_dBFS):
-    audio = AudioSegment.from_file(input)
-    change_in_dBFS = target_dBFS - audio.dBFS
-    adjusted_audio = audio.apply_gain(change_in_dBFS)
-    adjusted_audio.export(output, format='wav')
-
 
 def show_welcome_window():
     global welcome_window
@@ -515,7 +431,6 @@ def show_welcome_window():
 
     fade_in(welcome_window)
     welcome_window.mainloop()
-
 
 # Create the initial welcome window
 if __name__ == "__main__":
