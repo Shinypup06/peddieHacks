@@ -52,7 +52,7 @@ def compareaudios(file1, file2):
     # print(diff)
     netdiff = statistics.mean((abs(x) for x in diff))
     print(netdiff)
-    return(diff)
+    return(netdiff)
 
 def removeoctave(fr1, fr2):
     if fr1>fr2:
