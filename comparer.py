@@ -17,13 +17,13 @@ def combinedata(n,list):
 
 def compareaudios(file1, file2):
     sr1, audio1 = wavfile.read('D:\MyProfile\Documents\GitHub\peddieHacks\sampleAudios\mammamiavocals.wav')
-    sr2, audio2 = wavfile.read('D:\MyProfile\Documents\GitHub\peddieHacks\sampleAudios\mammamiavoice.wav')
+    sr2, audio2 = wavfile.read('notmm.wav')
 
     time1, frequency1, confidence1, activation1 = crepe.predict(audio1, sr1, model_capacity='tiny', viterbi=True)
     time2, frequency2, confidence2, activation2 = crepe.predict(audio2, sr2, model_capacity='tiny', viterbi=True)
     
     # print(pitchattime(time1,frequency1))
-    frequency1=combinedata(80,frequency1)
+    frequency1=combinedata(10,frequency1)
     frequency2=combinedata(10,frequency2)
 
     diff = []
@@ -37,17 +37,18 @@ def compareaudios(file1, file2):
         else:
             temp = frequency1[x]-frequency2[x]-2
 
-        diff.append(temp*confidence2[x])
+        # diff.append(temp*confidence2[x])
+        diff.append(temp)
 
-    for x in range (0,len(diff)):
-        if abs(diff[x])>100:
-            diff[x]=0
+    # for x in range (0,len(diff)):
+    #     if abs(diff[x])>100:
+    #         diff[x]=0
 
     # print(frequency1)
     # print(frequency2)
-    # print(diff)
+    print(diff)
     netdiff = statistics.mean((abs(x) for x in diff))
-    # print(netdiff)
+    print(netdiff)
     return(diff)
 
 def removeoctave(fr1, fr2):
@@ -58,27 +59,22 @@ def removeoctave(fr1, fr2):
         l = math.floor(math.log(fr2/fr1,2))
         return (fr1*pow(2,l))
 
-# def pitchattime(time, frequency):
-#     pitches = []
-#     prevf = frequency[0]
-#     prevt = time[0]
-#     temp = 0
-#     cnt = 0
-#     for x in range(0,len(frequency)):
-#         temp += frequency[x]
-#         cnt += 1
-#         if time[x]-prevt>0.25:
-#             temp/=cnt
-#             if abs(temp-prevf)<100:
-#                 pitches.append([temp])
-#                 prevf=temp
-#             temp = 0
-#             cnt = 0
-#             prevt=time[x]
-    
-#     for x in range(0,len(pitches)):
-#         if pitches[x]
-#             pitches.pop(x)
-#     return pitches
+def pitchattime(time, frequency):
+    pitches = []
+    prevf = frequency[0]
+    prevt = time[0]
+    temp = 0
+    cnt = 0
+    for x in range(0,len(frequency)):
+        temp += frequency[x]
+        cnt += 1
+        if time[x]-prevt>0.25:
+            temp/=cnt
+            pitches.append([temp])
+            prevf=temp
+            temp = 0
+            cnt = 0
+            prevt=time[x]
+    return pitches
 
-# compareaudios(1,1)
+compareaudios(1,1)
