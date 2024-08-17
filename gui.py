@@ -8,7 +8,7 @@ import warnings
 import wave
 import pyaudio
 import pygame
-import whisper
+# import whisper
 
 
 #filter out warnings (idk if it actually does filter out warnings though)
@@ -274,7 +274,7 @@ def create_record_window():
     global rec_play_button
     global re_record_button
     global save_analyze_button
-
+    default_text = "default"
     input1 = None
 
     record_window = tk.Tk()
@@ -293,6 +293,12 @@ def create_record_window():
                                  bg="#bfc0e2", fg="#674188")
     label_instruction.grid(row=0, column=0, columnspan=2, pady=10)
 
+    # Create a block of editable text
+    text_block = tk.Text(record_frame, wrap='word', height=10, width=40, font=("Verdana", 18), bg="#F7EFE5", fg="#674188")
+    text_block.grid(row=0, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')
+
+    text_block.insert(tk.END, default_text)
+
     # Create a grid for the buttons
     button_upload1 = tk.Button(record_frame, text="Upload MP3 File 1", command=upload_fileRec, width=19, height=2,
                                font=("Verdana", 16), bg="#F7EFE5", fg="#674188")
@@ -308,14 +314,13 @@ def create_record_window():
     re_record_button.grid(row=2, column=1, padx=20, pady=10)  # Positioned below the Rec/Play button
 
     playFrame = tk.Frame(record_frame, bg="#bfc0e2")
-    playFrame.grid(row=3, column=1, pady=10)
+    playFrame.grid(row=3, column=0, columnspan=2, pady=10)
 
-    global label_file1
     label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
     label_file1.grid(row=2, column=0, pady=5)  # Adjusted columnspan to 1
 
     file_buttons_frame = tk.Frame(record_frame, bg="#bfc0e2")
-    file_buttons_frame.grid(row=3, column=0, pady=10, columnspan=2)
+    file_buttons_frame.grid(row=3, column=1, pady=10, columnspan=2)
 
     # Create a frame for buttons at the bottom
     bottom_frame = tk.Frame(record_window, bg="#bfc0e2")
@@ -332,6 +337,14 @@ def create_record_window():
                                     font=("Verdana", 24), bg="#674188", fg="#F7EFE5", state=tk.DISABLED)
     save_analyze_button.pack(side=tk.RIGHT, padx=10, pady=10)  # Positioned to the right side of the bottom frame
 
+    # Adjust the grid configuration to ensure proper centering
+    record_frame.grid_rowconfigure(0, weight=1)
+    record_frame.grid_rowconfigure(1, weight=1)
+    record_frame.grid_rowconfigure(2, weight=1)
+    record_frame.grid_columnconfigure(0, weight=1)
+    record_frame.grid_columnconfigure(1, weight=1)
+    record_frame.grid_columnconfigure(2, weight=1)
+
     fade_in(record_window)
     record_window.mainloop()
 
@@ -339,7 +352,7 @@ def splitAudio2():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    lyrics = whisper.load_model("base").transcribe("output/" + name + "/vocals.wav")["text"]
+    # lyrics = whisper.load_model("base").transcribe("output/" + name + "/vocals.wav")["text"]
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
 
 
@@ -458,6 +471,7 @@ def show_welcome_window():
 
     welcome_label = tk.Label(welcome_frame, text="You can upload an existing file of your singing or record something in the app", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
     welcome_label.grid(row=0, column=0, columnspan=2, pady=(10, 20))
+
 
     # Create a frame for the Record button and its label
     record_frame = tk.Frame(welcome_frame, bg="#bfc0e2")
