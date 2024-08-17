@@ -384,19 +384,22 @@ def create_record_window():
 
     # Create a frame for the top half of the window
     record_frame = tk.Frame(center_frame, bg="#bfc0e2")
-    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(70, 0))
+    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(20, 0))
 
     label_instruction = tk.Label(record_frame, text="Please upload a WAV file of\nthe original song below:",
-                                 font=("Verdana", 24),
+                                 font=("Verdana", 20),
                                  bg="#bfc0e2", fg="#0a0b40")
     label_instruction.grid(row=0, column=0, columnspan=2, pady=(50,5))  # Adjusted pady to move down
 
-    # New label directly above the text block
+    # New button and label side by side
+    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#674188")
+    button_example.grid(row=0, column=3, padx=10, pady=(50, 5), sticky='w')  # Positioned to the left
+
     label_above_text = tk.Label(record_frame,
-                                text="         Use the generated lyrics or\n         paste from the internet:",
-                                font=("Verdana", 24),
+                                text="or search your song below\nor edit manually",
+                                font=("Verdana", 20),
                                 bg="#bfc0e2", fg="#0a0b40")
-    label_above_text.grid(row=0, column=2, pady=(50, 5), sticky='w')  # Adjusted pady to move down
+    label_above_text.grid(row=2, column=3, padx=10, pady=(50, 5), sticky='w')  # Positioned to the right
 
     # Create a block of editable text
     text_block = tk.Text(record_frame, wrap='word', height=5, width=30, font=("Verdana", 18), bg="#F7EFE5",
@@ -425,7 +428,7 @@ def create_record_window():
     playFrame = tk.Frame(record_frame, bg="#bfc0e2")
     playFrame.grid(row=3, column=0, columnspan=2, pady=10)
 
-    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
+    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 16), bg="#bfc0e2", fg="#674188")
     label_file1.grid(row=2, column=0, pady=5)  # Adjusted columnspan to 1
 
     file_buttons_frame = tk.Frame(record_frame, bg="#bfc0e2")
@@ -476,12 +479,14 @@ def create_record_window():
     record_frame.grid_columnconfigure(0, weight=1)
     record_frame.grid_columnconfigure(1, weight=1)
     record_frame.grid_columnconfigure(2, weight=1)
+    record_frame.grid_columnconfigure(3, weight=1)  # Added column for new button
 
     middle_frame.grid_columnconfigure(0, weight=1)
     middle_frame.grid_columnconfigure(1, weight=1)
 
     fade_in(record_window)
     record_window.mainloop()
+
 
 def searchLyrics():
     global lyrics
