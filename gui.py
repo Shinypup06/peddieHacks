@@ -8,6 +8,7 @@ import warnings
 import wave
 import pyaudio
 import pygame
+import whisper
 
 #filter out warnings (idk if it actually does filter out warnings though)
 warnings.filterwarnings('ignore')
@@ -322,8 +323,10 @@ def create_record_window():
     record_window.mainloop()
 
 def splitAudio2():
+    global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
+    lyrics = whisper.load_model("base").transcribe("output/" + name + "/vocals.wav")["text"]
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
     re_record_button.config(state=tk.NORMAL)  # Enable the Re-record button
 

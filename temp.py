@@ -1,71 +1,55 @@
-import pyaudio
-import wave
-import threading
-import time
+import requests
+from bs4 import BeautifulSoup
 
-def get_audio_length(file_path):
-    with wave.open(file_path, 'rb') as wf:
-        frames = wf.getnframes()
-        rate = wf.getframerate()
-        duration = frames / float(rate)
-    return duration
+def search_lyrics_lyricsgenius(query):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    search_url = f"https://genius.com/search?q={query.replace(' ', '%20')}"
+    print(search_url)
+    response = requests.get(search_url, headers=headers)
+    print(response.status_code)
 
-# Parameters
-FORMAT = pyaudio.paInt16  # Format of sampling
-CHANNELS = 1  # Number of channels: 1 for mono, 2 for stereo
-RATE = 44100  # Sampling rate: 44100 samples per second
-CHUNK = 1024  # Number of audio frames per buffer
-RECORD_SECONDS = get_audio_length("sampleAudios/mammamia.wav")  # Max duration of recording in seconds
-OUTPUT_FILENAME = "output.wav"  # Output file name
 
-# Global variable to control recording
-stop_recording = False
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        # Look for the first search result
+        result = soup.find('div', class_='mini_song_card')
+        if result and result.find('a'):
+            song_url = result.find('a')['href']
+            return get_lyrics_genius(song_url)
+        else:
+            print("No lyrics found.")
+            return None
+    else:
+        print(f"Error: Received status code {response.status_code}")
+        return None
 
-# Function to stop recording
-def stop_recording_function():
-    global stop_recording
-    stop_recording = True
+def get_lyrics_genius(song_url):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    response = requests.get(song_url, headers=headers)
+    
 
-# Function to record audio
-def record_audio():
-    global stop_recording
-    audio = pyaudio.PyAudio()
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        # Look for the lyrics container, updated with Genius site structure
+        lyrics_div = soup.find('div', class_='Lyrics__Container-sc-1ynbvzw-6 YYrds')
+        if lyrics_div:
+            lyrics = lyrics_div.get_text(separator="\n")
+            return lyrics
+        else:
+            return "Lyrics not found."
+    else:
+        print(f"Error: Received status code {response.status_code}")
+        return None
 
-    # Start Recording
-    stream = audio.open(format=FORMAT, channels=CHANNELS,
-                        rate=RATE, input=True,
-                        frames_per_buffer=CHUNK)
-    print("Recording...")
+def main():
+    misheard_lyrics = "I want it that way"
+    real_lyrics = search_lyrics_lyricsgenius(misheard_lyrics)
+    
+    if real_lyrics:
+        print("Real Lyrics:")
+        print(real_lyrics)
+    else:
+        print("No lyrics could be retrieved.")
 
-    frames = []
-    start_time = time.time()
-
-    while not stop_recording and (time.time() - start_time) < RECORD_SECONDS:
-        data = stream.read(CHUNK)
-        frames.append(data)
-
-    # Stop Recording
-    stream.stop_stream()
-    stream.close()
-    audio.terminate()
-
-    print("Finished recording")
-
-    # Save the recorded data as a WAV file
-    with wave.open(OUTPUT_FILENAME, 'wb') as wf:
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(audio.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-
-    print(f"Audio saved as {OUTPUT_FILENAME}")
-
-# Start recording audio in a separate thread
-recording_thread = threading.Thread(target=record_audio)
-recording_thread.start()
-
-# Example usage: Call this function to stop recording before the time is up
-# stop_recording_function()  # Uncomment to stop recording early
-
-# Wait for the recording thread to finish
-recording_thread.join()
+if __name__ == "__main__":
+    main()
