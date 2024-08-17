@@ -8,6 +8,7 @@ from splitter import *
 from sound import *
 from lyricReader import *
 from record import *
+from lyrics import *
 
 #use pygame mixer for sound playback
 pygame.init()
@@ -356,8 +357,6 @@ def update_run_button_state():
     else:
         button_run.config(state=tk.DISABLED)  # Disable the Run button
 
-import tkinter as tk
-
 def create_record_window():
     global record_window
     global label_file1, file_buttons_frame, playFrame
@@ -366,6 +365,7 @@ def create_record_window():
     global re_record_button
     global save_analyze_button
     global text_block
+    global artist_entry, song_entry
     default_text = "Your lyrics will show up here after you upload your song! Feel free to change them. Lyric detection is still under development."
     input1 = None
 
@@ -384,7 +384,7 @@ def create_record_window():
 
     # Create a frame for the top half of the window
     record_frame = tk.Frame(center_frame, bg="#bfc0e2")
-    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(20, 0))
+    record_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=(0, 70), pady=(70, 0))
 
     label_instruction = tk.Label(record_frame, text="Please upload a WAV file of\nthe original song below:",
                                  font=("Verdana", 24),
@@ -425,8 +425,8 @@ def create_record_window():
     playFrame = tk.Frame(record_frame, bg="#bfc0e2")
     playFrame.grid(row=3, column=0, columnspan=2, pady=10)
 
-    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 18), bg="#bfc0e2", fg="#674188")
-    label_file1.grid(row=2, column=0, pady=1)  # Adjusted columnspan to 1
+    label_file1 = tk.Label(record_frame, text="File 1: None", font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
+    label_file1.grid(row=2, column=0, pady=5)  # Adjusted columnspan to 1
 
     file_buttons_frame = tk.Frame(record_frame, bg="#bfc0e2")
     file_buttons_frame.grid(row=3, column=1, pady=10, columnspan=2)
@@ -451,11 +451,11 @@ def create_record_window():
     artist_entry.grid(row=2, column=1, padx=10, pady=10, sticky='w')
 
     # Search button
-    search_button = tk.Button(middle_frame, text="Search", command=print("searched"), font=("Verdana", 20), bg="#674188", fg="#F7EFE5")
+    search_button = tk.Button(middle_frame, text="Search", command=searchLyrics, font=("Verdana", 20), bg="#674188", fg="#F7EFE5")
     search_button.grid(row=3, column=0, columnspan=2, pady=20)
 
     # Create a frame for buttons at the bottom
-    bottom_frame = tk.Frame(record_window, bg="#bfc0e2", height=80)  # Set a fixed height if needed
+    bottom_frame = tk.Frame(record_window, bg="#bfc0e2")
     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
 
     # Add buttons to bottom_frame
@@ -483,7 +483,27 @@ def create_record_window():
     fade_in(record_window)
     record_window.mainloop()
 
+def searchLyrics():
+    global lyrics
+    artist = artist_entry.get()
+    title = song_entry.get()
+    
+    lyrics = getInternetLyrics(artist, title)
+    
+    # Insert generated lyrics into the lyrics box
+    text_block.delete('1.0', tk.END)
+    text_block.insert(tk.END, lyrics)
 
+    rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
+
+# TODO: need a generate lyrics button
+def getGeneratedLyrics():
+    global lyrics
+    lyrics = getLyrics("output/" + name + "/vocals.wav")
+    
+    # Insert generated lyrics into the lyrics box
+    text_block.delete('1.0', tk.END)
+    text_block.insert(tk.END, lyrics)
 
 def analyzeRecordedAudio():
     global score
@@ -513,12 +533,7 @@ def processOriginalSong():
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
-    lyrics = getLyrics("output/" + name + "/vocals.wav")
     
-    # Insert generated lyrics into the lyrics box
-    text_block.delete('1.0', tk.END)
-    text_block.insert(tk.END, lyrics)
-
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
 
 def upload_fileRec():
