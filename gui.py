@@ -132,7 +132,6 @@ def analyzeAudio():
     score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", input2))
     fade_out(loading_window, create_results_window)
 
-
 def add_to_leaderboard(entry_name, leaderboard, score_label):
     name = entry_name.get()
 
@@ -214,8 +213,6 @@ def create_saved_window():
     fade_in(saved_window)
     saved_window.mainloop()
 
-
-
 def show_loading_screen():
     global loading_window
     loading_window = tk.Toplevel()
@@ -231,7 +228,6 @@ def show_loading_screen():
                              bg="#bfc0e2", fg="#0a0b40")
     loading_label.pack(pady=20)
     fade_in(loading_window)
-
 
     # Run the long task in a separate thread to prevent GUI freezing
     threading.Thread(target=analyzeAudio).start()
@@ -428,7 +424,7 @@ def create_record_window():
     back_button.pack(side=tk.LEFT, padx=10, pady=10)
 
     save_analyze_button = tk.Button(bottom_frame, text="Save & Analyze",
-                                    command=lambda: fade_out(record_window, create_results_window), width=15, height=2,
+                                    command=lambda: fade_out(record_window, showLoadingWindow2), width=15, height=2,
                                     font=("Verdana", 24), bg="#674188", fg="#F7EFE5", state=tk.DISABLED)
     save_analyze_button.pack(side=tk.RIGHT, padx=10, pady=10)  # Positioned to the right side of the bottom frame
 
@@ -442,6 +438,30 @@ def create_record_window():
 
     fade_in(record_window)
     record_window.mainloop()
+
+def analyzeRecordedAudio():
+    global score
+    score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", "output.wav"))
+    fade_out(loading_window, create_results_window)
+
+def showLoadingWindow2():
+    global loading_window
+    loading_window = tk.Toplevel()
+    loading_window.title("Loading")
+    loading_window.geometry("1920x1080")
+    loading_window.configure(bg="#bfc0e2")
+    create_header(loading_window, "Loading...")
+
+    loading_frame = tk.Frame(loading_window, bg="#bfc0e2")
+    loading_frame.place(relx=0.5, rely=0.5, anchor='center')
+
+    loading_label = tk.Label(loading_frame, text="Processing your files, please wait...", font=("Verdana", 24),
+                             bg="#bfc0e2", fg="#0a0b40")
+    loading_label.pack(pady=20)
+    fade_in(loading_window)
+
+    # Run the long task in a separate thread to prevent GUI freezing
+    threading.Thread(target=analyzeRecordedAudio).start()
 
 def processOriginalSong():
     global lyrics
