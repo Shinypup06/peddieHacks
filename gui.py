@@ -32,11 +32,11 @@ def separate_audio(input_file, output_dir):
 
 def create_header(window, title):
     # Create a header frame with #F7EFE5 background
-    header_frame = tk.Frame(window, bg="#F7EFE5", height=50)
+    header_frame = tk.Frame(window, bg="#674188", height=50)
     header_frame.pack(fill=tk.X, side=tk.TOP)
 
     # Add header label with indigo text
-    header_label = tk.Label(header_frame, text="Cool Name", font=("Verdana", 16, "bold"), bg="#F7EFE5", fg="#674188")
+    header_label = tk.Label(header_frame, text="Cool Name", font=("Verdana", 16, "bold"), bg="#674188", fg="#F7EFE5")
     header_label.pack(pady=10)
 
 def upload_file1():

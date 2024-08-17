@@ -1,12 +1,14 @@
 import crepe
 import math
+import numpy as np
+import statistics
 from scipy.io import wavfile
 
 def combinedata(n,list):
     newlist = []
     temp = 0
     for x in range (0,len(list)):
-        temp = temp+list[x]
+        temp += list[x]
         if x%n == 0:
             temp = temp/n
             newlist.append(temp)
@@ -19,8 +21,9 @@ def compareaudios(file1, file2):
 
     time1, frequency1, confidence1, activation1 = crepe.predict(audio1, sr1, model_capacity='tiny', viterbi=True)
     time2, frequency2, confidence2, activation2 = crepe.predict(audio2, sr2, model_capacity='tiny', viterbi=True)
-
-    frequency1=combinedata(10,frequency1)
+    
+    # print(pitchattime(time1,frequency1))
+    frequency1=combinedata(80,frequency1)
     frequency2=combinedata(10,frequency2)
 
     diff = []
@@ -42,8 +45,9 @@ def compareaudios(file1, file2):
 
     # print(frequency1)
     # print(frequency2)
-    print(diff)
-    print(netdiff(diff))
+    # print(diff)
+    netdiff = statistics.mean((abs(x) for x in diff))
+    # print(netdiff)
     return(diff)
 
 def removeoctave(fr1, fr2):
@@ -54,10 +58,27 @@ def removeoctave(fr1, fr2):
         l = math.floor(math.log(fr2/fr1,2))
         return (fr1*pow(2,l))
 
-def netdiff(diff):
-    temp = 0
-    for x in diff:
-        temp = temp + abs(x)
-    return temp/len(diff)
+# def pitchattime(time, frequency):
+#     pitches = []
+#     prevf = frequency[0]
+#     prevt = time[0]
+#     temp = 0
+#     cnt = 0
+#     for x in range(0,len(frequency)):
+#         temp += frequency[x]
+#         cnt += 1
+#         if time[x]-prevt>0.25:
+#             temp/=cnt
+#             if abs(temp-prevf)<100:
+#                 pitches.append([temp])
+#                 prevf=temp
+#             temp = 0
+#             cnt = 0
+#             prevt=time[x]
+    
+#     for x in range(0,len(pitches)):
+#         if pitches[x]
+#             pitches.pop(x)
+#     return pitches
 
-compareaudios(1,1)
+# compareaudios(1,1)
