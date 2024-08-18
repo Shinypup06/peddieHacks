@@ -395,7 +395,8 @@ if __name__ == "__main__":
         hover_color=LIGHT_PURPLE,
         font=BUTTON_FONT,
         fg_color=WHITE,
-        text_color=DARK_PURPLE)
+        text_color=DARK_PURPLE,
+        state="disabled")
     runButton.place(relx=0.5, rely=0.7, anchor="n")
 
     #Back button
