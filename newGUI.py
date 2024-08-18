@@ -19,6 +19,11 @@ MED_PURPLE = "#9581c7"
 WHITE = "#f7f7ff"
 BLACK = "#000000"
 
+# initialize input files
+input1 = ""
+input2 = ""
+
+
 def openWelcomeScreen():
     welcomeFrame.lift()
 
@@ -27,6 +32,45 @@ def openRecordScreen():
     
 def openAnalyzeScreen():
     analyzeFrame.lift()
+
+def loadUploaded():
+    loadingFrame.lift()
+    threading.Thread(target=analyzeAudio).start()
+
+def splitAudio(input, output):
+    subprocess.run(["python", "splitter.py", input, output])
+
+def analyzeAudio():
+    global score
+
+    print("Original Vocals: " + "output/" + name + "/vocals.wav")
+    print("Recorded Vocals: " + input2)
+
+    # Create a new process for Spleeter
+    spleeter_process = multiprocessing.Process(target=splitAudio, args=(input1, "output/"))
+    print("Running Spleeter...")
+    spleeter_process.start()
+
+    # Wait for the Spleeter process to finish
+    spleeter_process.join()
+
+    score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", input2))
+
+    global score_label
+    score_label.config(text=f"{score}%")
+    resultsFrame.lift()
+
+def loadRecorded():
+    loadingFrame.lift()
+    # Run the long task in a separate thread to prevent GUI freezing
+    threading.Thread(target=analyzeRecordedAudio).start()
+
+def analyzeRecordedAudio():
+    global score
+    score = scaleToScore(compareaudios("output/" + name + "/vocals.wav", "output.wav"))
+    global score_label
+    score_label.config(text=f"{score}%")
+    resultsFrame.lift()
 
 def getGeneratedLyrics():
     print("test")
@@ -128,6 +172,66 @@ def searchLyrics():
     startRecordingButton.configure(state="normal")  # Enable the Rec/Play button
     loading_text.config(text="")
 
+def upload_file1():
+    global input1, name
+    file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
+    if file_path:
+        # Extract and display file name
+        file_name = file_path.split("/")[-1]  # For Unix-like paths
+        input1 = file_path
+        global file1_label
+        file1_label.config(text=f"File 1: {file_name}")
+        name = file_name[:-4]
+        print(f"Input1: {input1}")
+        show_buttons1(file1_buttons_frame)
+        update_run_button_state()
+
+def upload_file2():
+    global input2
+    file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
+    if file_path:
+        # Extract and display file name
+        file_name = file_path.split("/")[-1]  # For Unix-like paths
+        input2 = file_path
+        global file2_label
+        file2_label.config(text=f"File 2: {file_name}")
+        print(f"Input2: {input2}")
+        show_buttons2(file2_buttons_frame)
+        update_run_button_state()
+
+def show_buttons1(frame):
+    for widget in frame.winfo_children():
+        widget.grid_forget()  # Hide existing buttons
+    # Create 2 square buttons
+
+    button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
+                       fg="#F7EFE5", command=lambda: play_file(input1))
+    button1.grid(row=0, column=1, padx=10, pady=5)
+
+    button2 = tk.Button(frame, text="■", width=3, height=0, font=("Verdana", 20), bg="#674188",
+                       fg="#F7EFE5", command=lambda: stop_playback())
+    button2.grid(row=0, column=2, padx=10, pady=5)
+
+def show_buttons2(frame):
+    for widget in frame.winfo_children():
+        widget.grid_forget()  # Hide existing buttons
+    # Create 2 square buttons
+
+    button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
+                       fg="#F7EFE5", command=lambda: play_file(input2))
+    button1.grid(row=0, column=1, padx=10, pady=5)
+
+    button2 = tk.Button(frame, text="■", width=3, height=0, font=("Verdana", 20), bg="#674188",
+                       fg="#F7EFE5", command=lambda: stop_playback())
+    button2.grid(row=0, column=2, padx=10, pady=5)
+
+def update_run_button_state():
+    if input1 and input2:
+        runButton.configure(state="normal")  # Enable the Run button
+    else:
+        runButton.configure(state="disabled")  # Disable the Run button
+
+
 if __name__ == "__main__":
 
     # use pygame mixer for sound playback
@@ -149,6 +253,36 @@ if __name__ == "__main__":
     BUTTON_FONT= customtkinter.CTkFont(family='Fredoka', size=30)
     CUSTOM_FONT= customtkinter.CTkFont(family='Rubik Light', size=20)
 
+    #RESULTS SCREEN
+    resultsFrame=tk.Frame(root, bg=LIGHT_PURPLE)
+    resultsFrame.place(
+        relx=0, 
+        rely=0.06, 
+        relwidth=1, 
+        relheight=0.94)
+    
+    results_label = tk.Label(resultsFrame, text=f"Your Pitch Accuracy Score:", font=HEADER_FONT,
+                             bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    results_label.place(relx=0.5, rely=0.3, anchor="center")
+
+    score_label = tk.Label(resultsFrame, text="", font=TITLE_FONT,
+                             bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    score_label.place(relx=0.5, rely=0.4, anchor="center")
+
+    #LOADING SCREEN
+    loadingFrame=tk.Frame(root, bg=LIGHT_PURPLE)
+    loadingFrame.place(
+        relx=0, 
+        rely=0.06, 
+        relwidth=1, 
+        relheight=0.94)
+    loading_label = tk.Label(
+        loadingFrame, 
+        text="Processing your files, please wait...", 
+        font=HEADER_FONT,
+        bg=LIGHT_PURPLE, 
+        fg=DARK_PURPLE)
+    loading_label.place(relx=0.5, rely=0.5, anchor="s")
 
     #ANALYZE SCREEN
     analyzeFrame=tk.Frame(root, bg=LIGHT_PURPLE)
@@ -171,27 +305,25 @@ if __name__ == "__main__":
         anchor="center")
 
     #Background images
-
     topImage = ImageTk.PhotoImage(Image.open("images/top.png"))
     topImageLabel = tk.Label(analyzeFrame, image=topImage, bg=LIGHT_PURPLE)
     topImageLabel.place(relx=0.5, rely=0.19, anchor="center")
 
-    frogImage = ImageTk.PhotoImage(Image.open("images/plain.png"))
-    frogImageLabel = tk.Label(analyzeFrame, image=frogImage, bg=LIGHT_PURPLE)
-    frogImageLabel.place(relx=0.5, rely=0.56, anchor="center")
+    plainFrogImage = ImageTk.PhotoImage(Image.open("images/plain.png"))
+    plainFrogImageLabel = tk.Label(analyzeFrame, image=plainFrogImage, bg=LIGHT_PURPLE)
+    plainFrogImageLabel.place(relx=0.5, rely=0.56, anchor="center")
 
     #File1 Button
-
-    analyze_frame = tk.Frame(analyzeFrame, bg=LIGHT_PURPLE)
-    analyze_frame.place(
+    file1_frame = tk.Frame(analyzeFrame, bg=LIGHT_PURPLE)
+    file1_frame.place(
         relx=0.3,
         rely= 0.55,
         anchor="center")
 
     file1_button = customtkinter.CTkButton(
-        analyze_frame,
+        file1_frame,
         text="Upload",
-        command=uploadOriginalSong,
+        command=upload_file1,
         width=250,
         height=80,
         corner_radius=50,
@@ -204,26 +336,28 @@ if __name__ == "__main__":
         text_color=WHITE)
     file1_button.pack()
 
-    record_label = tk.Label(
-        analyze_frame,
-        text="File 1: FILENAME",
+    file1_label = tk.Label(
+        file1_frame,
+        text="File 1:",
         font=NORMAL_FONT,
         bg=LIGHT_PURPLE,
         fg=DARK_PURPLE)
-    record_label.pack(pady=10)
+    file1_label.pack(pady=10)
+
+    file1_buttons_frame = tk.Frame(file1_frame, bg=LIGHT_PURPLE)
+    file1_buttons_frame.pack()
 
     #File2 Button
-    analyze_frame = tk.Frame(analyzeFrame, bg=LIGHT_PURPLE)
-    analyze_frame.place(
+    file2_frame = tk.Frame(analyzeFrame, bg=LIGHT_PURPLE)
+    file2_frame.place(
         relx=0.7,
         rely= 0.55,
         anchor="center")
 
-
     file2_button = customtkinter.CTkButton(
-        analyze_frame,
+        file2_frame,
         text="Upload",
-        command=uploadOriginalSong,
+        command=upload_file2,
         width=250,
         height=80,
         corner_radius=50,
@@ -236,19 +370,22 @@ if __name__ == "__main__":
         text_color=WHITE)
     file2_button.pack()
 
-    analyze_label = tk.Label(
-        analyze_frame,
-        text="File 2: FILENAME",
+    file2_label = tk.Label(
+        file2_frame,
+        text="File 2: ",
         font=NORMAL_FONT,
         bg=LIGHT_PURPLE,
         fg=DARK_PURPLE)
-    analyze_label.pack(pady=10)
+    file2_label.pack(pady=10)
+
+    file2_buttons_frame = tk.Frame(file2_frame, bg=LIGHT_PURPLE)
+    file2_buttons_frame.pack()
 
     #Run Button
-    uploadOriginalButton = customtkinter.CTkButton(
+    runButton = customtkinter.CTkButton(
         analyzeFrame,
         text="Run",
-        #command=loadingScreen,
+        command= loadUploaded,
         width=350,
         height=60,
         corner_radius=50,
@@ -259,7 +396,7 @@ if __name__ == "__main__":
         font=BUTTON_FONT,
         fg_color=WHITE,
         text_color=DARK_PURPLE)
-    uploadOriginalButton.place(relx=0.5, rely=0.7, anchor="n")
+    runButton.place(relx=0.5, rely=0.7, anchor="n")
 
     #Back button
     backButton = customtkinter.CTkButton(
@@ -456,7 +593,7 @@ if __name__ == "__main__":
     saveAnalyzeButton = customtkinter.CTkButton(
         recordFrame, 
         text="Analyze Recording", 
-        # command=showLoadingWindow2, 
+        command=loadRecorded, 
         width=300, 
         height=80, 
         corner_radius=50, 
