@@ -2,8 +2,8 @@ import tkinter as tk
 import customtkinter
 from tkinter import font
 from PIL import Image, ImageTk
-# from tkinter import filedialog
-# import threading
+from tkinter import filedialog
+import threading
 # import pygame
 # import subprocess, multiprocessing
 # from comparer import *
@@ -24,13 +24,27 @@ def openRecordScreen():
     recordFrame.lift()
     
 def openAnalyzeScreen():
-    print("test")
+    analyzeFrame.lift()
 
 def getGeneratedLyrics():
     print("test")
 
 def uploadOriginalSong():
-    print("test")
+    global input1, name
+    file_path = filedialog.askopenfilename(filetypes=[("WAV files", "*.wav")])
+    if file_path:
+        # Extract and display file name
+        file_name = file_path.split("/")[-1]  # For Unix-like paths
+        input1 = file_path
+        global fileLabel
+        name = file_name[:-4]
+        fileLabel.config(text=f"File 1: {file_name}")
+        print(f"Input1: {input1}")
+        print(f"fileName: {name}")
+
+        #TODO: uncomment this
+        # Split audio and get lyrics in a separate thread to prevent GUI freezing
+        # threading.Thread(target=processOriginalSong).start()
 
 def openWelcomeScreen():
     welcomeFrame.lift()
@@ -45,6 +59,17 @@ NORMAL_FONT = font.Font(family="Rubik Light", size=20)
 
 BUTTON_FONT= customtkinter.CTkFont(family='Fredoka', size=30)
 CUSTOM_FONT= customtkinter.CTkFont(family='Rubik Light', size=20)
+
+
+#ANALYZE SCREEN
+analyzeFrame=tk.Frame(root, bg=LIGHT_PURPLE)
+analyzeFrame.place(
+    relx=0, 
+    rely=0.06, 
+    relwidth=1, 
+    relheight=0.94)
+
+
 
 #RECORD SCREEN
 recordFrame=tk.Frame(root, bg=LIGHT_PURPLE)
@@ -322,7 +347,7 @@ analyze_label.pack(pady=10)
 analyze_button = customtkinter.CTkButton(
     analyze_frame, 
     text="Analyze", 
-    command=openRecordScreen, 
+    command=openAnalyzeScreen, 
     width=250, 
     height=80, 
     corner_radius=50, 
