@@ -445,7 +445,7 @@ def create_record_window():
     label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
     label_blank.grid(row=0, column=0, padx=10, pady=10, sticky='e')
 
-  
+
 
     # Song input
     label_song = tk.Label(middle_frame, text="Song:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
