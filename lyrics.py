@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import whisper
 
 def getInternetLyrics(artist, track):
     # artist = 'Fall Out Boy'
@@ -17,4 +18,11 @@ def getInternetLyrics(artist, track):
     # print(r.content)
     return (lyrics)
 
-# getlyrics('Casey Edwards','Bury the Light')
+
+def getLyrics(file):
+    lyrics = whisper.load_model("base").transcribe(file)["text"]
+    
+    # split into new lines whenever punctuation is encountered
+    lyrics = lyrics.replace('.', '\n').replace(',', '\n').replace('?', '?\n').replace('\n ', '\n')
+
+    return lyrics
