@@ -60,7 +60,7 @@ def openAnalyzeScreen():
     hideButtons(file2_buttons_frame)
     runButton.configure(state="disabled")
     file1_label.configure(text="File 1:")
-    file1_label.configure(text="File 2:")
+    file2_label.configure(text="File 2:")
 
     analyzeFrame.lift()
 
@@ -69,10 +69,10 @@ def openLeaderBoard():
     singer_entry.configure(state="normal")
     addEntryButton.configure(state="normal")
     # Artist
-    label_artist1 = tk.Label(leaderboardFrame, text=f"Song: {name}", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_artist1 = tk.Label(leaderboardFrame, text=f"Song: {name}    ", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
     label_artist1.place(relx=0.25, rely= 0.37, anchor="n")
     # Score
-    label_score = tk.Label(leaderboardFrame, text=f"Score: {score}", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_score = tk.Label(leaderboardFrame, text=f"Score: {score}    ", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
     label_score.place(relx=0.25, rely= 0.49, anchor="n")
     leaderboardFrame.lift()
 
@@ -685,7 +685,7 @@ if __name__ == "__main__":
 
     # loading text for processing time
     loading_text = tk.Label(recordFrame, text="", font=NORMAL_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
-    loading_text.place(relx=0.2, rely=0.75, anchor="n")
+    loading_text.place(relx=0.2, rely=0.7, anchor="n")
 
     #Generate AI lyrics
     generateLyricsButton = customtkinter.CTkButton(
