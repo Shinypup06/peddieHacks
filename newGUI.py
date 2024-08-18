@@ -269,6 +269,39 @@ if __name__ == "__main__":
                              bg=LIGHT_PURPLE, fg=DARK_PURPLE)
     score_label.place(relx=0.5, rely=0.4, anchor="center")
 
+    backButton = customtkinter.CTkButton(
+        resultsFrame,
+        text="Back",
+        command=openWelcomeScreen,
+        width=300,
+        height=80,
+        corner_radius=50,
+        border_color=WHITE,
+        border_spacing=10,
+        border_width=3,
+        hover_color=MED_PURPLE,
+        font=BUTTON_FONT,
+        fg_color=DARK_PURPLE,
+        text_color=WHITE)
+    backButton.place(relx=0.15, rely=0.8, anchor="n")
+
+    saveAnalyzeButton = customtkinter.CTkButton(
+        resultsFrame,
+        text="Analyze Recording",
+        #command=leaderboard,
+        width=300,
+        height=80,
+        corner_radius=50,
+        border_color=WHITE,
+        border_spacing=10,
+        border_width=3,
+        hover_color=MED_PURPLE,
+        font=BUTTON_FONT,
+        fg_color=DARK_PURPLE,
+        text_color=WHITE,
+        state="disabled")
+    saveAnalyzeButton.place(relx=0.85, rely=0.8, anchor="n")
+
     #LOADING SCREEN
     loadingFrame=tk.Frame(root, bg=LIGHT_PURPLE)
     loadingFrame.place(
