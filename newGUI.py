@@ -27,20 +27,16 @@ score = 0.0
 
 
 def openWelcomeScreen():
+    # when user returns to welcome screen, clear previous song data to prepare for new song
     global input1, input2, name, score, runButton
     input1=""
     input2=""
     name=""
     score=0
-
-
-    
-
-
-
     welcomeFrame.lift()
 
 def openRecordScreen():
+    # When the record screen is opened, reset everything to blank
     global fileLabel, input1
     input1=""
     startRecordingButton.configure(state="disabled")
@@ -54,6 +50,7 @@ def openRecordScreen():
     recordFrame.lift()
     
 def openAnalyzeScreen():
+    # When the analyze screen is opened, reset everything to blank
     global runButton, file1_label, file2_label
 
     hideButtons(file1_buttons_frame)
