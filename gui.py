@@ -630,9 +630,6 @@ def show_welcome_window():
                                font=("Verdana", 24), bg="#674188", fg="#F7EFE5")
     analyze_button.pack()
 
-
-
-
     fade_in(welcome_window)
     welcome_window.mainloop()
 
