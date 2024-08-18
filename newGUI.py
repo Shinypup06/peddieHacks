@@ -69,7 +69,125 @@ analyzeFrame.place(
     relwidth=1, 
     relheight=0.94)
 
+analyze_label = tk.Label(
+    analyzeFrame,
+    text="Please upload the WAV files below:",
+    font=HEADER_FONT,
+    bg=LIGHT_PURPLE,
+    fg=DARK_PURPLE)
 
+analyze_label.place(
+    relx=0.5,
+    rely=0.38,
+    anchor="center")
+
+#Background images
+
+topImage = ImageTk.PhotoImage(Image.open("images/top.png"))
+topImageLabel = tk.Label(analyzeFrame, image=topImage, bg=LIGHT_PURPLE)
+topImageLabel.place(relx=0.5, rely=0.19, anchor="center")
+
+frogImage = ImageTk.PhotoImage(Image.open("images/plain.png"))
+frogImageLabel = tk.Label(analyzeFrame, image=frogImage, bg=LIGHT_PURPLE)
+frogImageLabel.place(relx=0.5, rely=0.56, anchor="center")
+
+#File1 Button
+
+analyze_frame = tk.Frame(analyzeFrame, bg=LIGHT_PURPLE)
+analyze_frame.place(
+    relx=0.3,
+    rely= 0.55,
+    anchor="center")
+
+file1_button = customtkinter.CTkButton(
+    analyze_frame,
+    text="Upload",
+    command=uploadOriginalSong,
+    width=250,
+    height=80,
+    corner_radius=50,
+    border_color=WHITE,
+    border_spacing=10,
+    border_width=3,
+    hover_color=MED_PURPLE,
+    font=BUTTON_FONT,
+    fg_color=DARK_PURPLE,
+    text_color=WHITE)
+file1_button.pack()
+
+record_label = tk.Label(
+    analyze_frame,
+    text="File 1: FILENAME",
+    font=NORMAL_FONT,
+    bg=LIGHT_PURPLE,
+    fg=DARK_PURPLE)
+record_label.pack(pady=10)
+
+#File2 Button
+analyze_frame = tk.Frame(analyzeFrame, bg=LIGHT_PURPLE)
+analyze_frame.place(
+    relx=0.7,
+    rely= 0.55,
+    anchor="center")
+
+
+file2_button = customtkinter.CTkButton(
+    analyze_frame,
+    text="Upload",
+    command=uploadOriginalSong,
+    width=250,
+    height=80,
+    corner_radius=50,
+    border_color=WHITE,
+    border_spacing=10,
+    border_width=3,
+    hover_color=MED_PURPLE,
+    font=BUTTON_FONT,
+    fg_color=DARK_PURPLE,
+    text_color=WHITE)
+file2_button.pack()
+
+analyze_label = tk.Label(
+    analyze_frame,
+    text="File 2: FILENAME",
+    font=NORMAL_FONT,
+    bg=LIGHT_PURPLE,
+    fg=DARK_PURPLE)
+analyze_label.pack(pady=10)
+
+#Run Button
+uploadOriginalButton = customtkinter.CTkButton(
+    analyzeFrame,
+    text="Run",
+    #command=loadingScreen,
+    width=350,
+    height=60,
+    corner_radius=50,
+    border_color=MED_PURPLE,
+    border_spacing=10,
+    border_width=3,
+    hover_color=LIGHT_PURPLE,
+    font=BUTTON_FONT,
+    fg_color=WHITE,
+    text_color=DARK_PURPLE)
+uploadOriginalButton.place(relx=0.5, rely=0.7, anchor="n")
+
+#Back button
+backButton = customtkinter.CTkButton(
+    analyzeFrame,
+    text="Back",
+    command=openWelcomeScreen,
+    width=300,
+    height=80,
+    corner_radius=50,
+    border_color=WHITE,
+    border_spacing=10,
+    border_width=3,
+    hover_color=MED_PURPLE,
+    font=BUTTON_FONT,
+    fg_color=DARK_PURPLE,
+    text_color=WHITE)
+backButton.place(relx=0.15, rely=0.8, anchor="n")
 
 #RECORD SCREEN
 recordFrame=tk.Frame(root, bg=LIGHT_PURPLE)
@@ -198,10 +316,10 @@ label_song.place(relx=0.55, rely=0.65, anchor="n")
 song_entry = customtkinter.CTkEntry(
     recordFrame, 
     font=BUTTON_FONT, 
-    width=400, 
+    width=500,
     fg_color=WHITE, 
     text_color=BLACK)
-song_entry.place(relx=0.55, rely= 0.7, anchor="n")
+song_entry.place(relx=0.55, rely= 0.71, anchor="n")
 
 # Artist input
 label_artist = tk.Label(recordFrame, text="Artist:", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
@@ -209,7 +327,7 @@ label_artist.place(relx=0.55, rely= 0.77, anchor="n")
 artist_entry = customtkinter.CTkEntry(
     recordFrame, 
     font=BUTTON_FONT, 
-    width=400, 
+    width=500,
     fg_color=WHITE, 
     text_color=BLACK)
 artist_entry.place(relx=0.55, rely= 0.82, anchor="n")
