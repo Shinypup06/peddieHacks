@@ -90,7 +90,7 @@ def add_to_leaderboard(entry_name, leaderboard):
         # Clear the leaderboard and insert sorted entries
         leaderboard.delete(0, tk.END)
         for entry in current_entries:
-            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f} -- {name}")
+            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f} -- {entry[2]}")
 
         # Clear the input fields after adding to the leaderboard
         entry_name.delete(0, tk.END)
