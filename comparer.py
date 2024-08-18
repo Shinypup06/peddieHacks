@@ -72,7 +72,10 @@ def removeoutliers(list):
 
 #calculate a percentage score from 0 - 100 using exponential regression
 def scaleToScore(netDiff):
-    a = 101.304
-    b = -0.0190624
-    return min(100, round(a * math.pow(math.e, b * netDiff), 2))
+    # return round(110 - 1.988*netDiff + 0.007617*pow(netDiff,2), 2)
+    a = 93.549
+    b = -0.013931
+    scored = min(100, round(((a * math.pow(math.e, b * netDiff)) - 30) * 2, 2))
+
+    return scored
 

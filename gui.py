@@ -6,7 +6,6 @@ import subprocess, multiprocessing
 from comparer import *
 from splitter import *
 from sound import *
-from lyricReader import *
 from record import *
 from lyrics import *
 
@@ -262,7 +261,7 @@ def create_results_window():
                              bg="#bfc0e2", fg="#674188")
     results_label.pack(pady=20)
 
-    result_text = "Result details go here."
+    result_text = "Processing finished! Save or try again?"
     result_display = tk.Label(results_frame, text=result_text, font=("Verdana", 24), bg="#bfc0e2", fg="#674188")
     result_display.pack(pady=10)
 
@@ -393,7 +392,7 @@ def create_record_window():
     label_instruction.grid(row=1, column=0, columnspan=2, pady=(0,5))  # Adjusted pady to move down
 
     # New button and label side by side
-    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#674188", state="disabled", command=getGeneratedLyrics)
+    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#90844c", state="disabled", command=getGeneratedLyrics)
     button_example.grid(row=1, column=3, padx=10, pady=(0, 5), sticky='w')  # Positioned to the left
 
     label_manual = tk.Label(record_frame,
@@ -402,10 +401,7 @@ def create_record_window():
                             bg="#bfc0e2", fg="#0a0b40")
     label_manual.grid(row=2, column=3, padx=10, pady=(50, 5), sticky='w')  # Positioned to the right
 
-
-
     # Create a block of editable text for the lyrics
-
     text_block = tk.Text(record_frame, wrap='word', height=5, width=30, font=("Verdana", 18), bg="#F7EFE5",
                          fg="#674188")
     text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')  # Adjusted pady to move down
@@ -444,8 +440,6 @@ def create_record_window():
 
     label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
     label_blank.grid(row=0, column=0, padx=10, pady=10, sticky='e')
-
-
 
     # Song input
     label_song = tk.Label(middle_frame, text="Song:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
@@ -496,7 +490,6 @@ def create_record_window():
 
     fade_in(record_window)
     record_window.mainloop()
-
 
 def searchLyrics():
     loading_text.config(text="loading...")
