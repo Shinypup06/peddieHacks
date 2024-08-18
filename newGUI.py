@@ -407,6 +407,18 @@ if __name__ == "__main__":
                              bg=LIGHT_PURPLE, fg=DARK_PURPLE)
     score_label.place(relx=0.5, rely=0.4, anchor="center")
 
+    leftImage = ImageTk.PhotoImage(Image.open("images/left.png"))
+    leftImageLabel = tk.Label(resultsFrame, image=leftImage, bg=LIGHT_PURPLE)
+    leftImageLabel.place(relx=0.18, rely=0.35, anchor="center")
+
+    centerImage = ImageTk.PhotoImage(Image.open("images/notes.png"))
+    centerImageLabel = tk.Label(resultsFrame, image=centerImage, bg=LIGHT_PURPLE)
+    centerImageLabel.place(relx=0.5, rely=0.7, anchor="center")
+
+    rightImage = ImageTk.PhotoImage(Image.open("images/right.png"))
+    rightImageLabel = tk.Label(resultsFrame, image=rightImage, bg=LIGHT_PURPLE)
+    rightImageLabel.place(relx=0.83, rely=0.38, anchor="center")
+
     backHomeButton = customtkinter.CTkButton(
         resultsFrame,
         text="Back",
@@ -452,7 +464,12 @@ if __name__ == "__main__":
         font=HEADER_FONT,
         bg=LIGHT_PURPLE, 
         fg=DARK_PURPLE)
-    loading_label.place(relx=0.5, rely=0.5, anchor="s")
+    loading_label.place(relx=0.5, rely=0.55, anchor="s")
+
+    # Images
+    threeImage = ImageTk.PhotoImage(Image.open("images/three.png"))
+    threeImageLabel = tk.Label(loadingFrame, image=threeImage, bg=LIGHT_PURPLE)
+    threeImageLabel.place(relx=0.5, rely=0.36, anchor="center")
 
     #ANALYZE SCREEN
     analyzeFrame=tk.Frame(root, bg=LIGHT_PURPLE)
