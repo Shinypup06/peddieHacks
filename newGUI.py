@@ -33,6 +33,9 @@ def openRecordScreen():
 def openAnalyzeScreen():
     analyzeFrame.lift()
 
+def openLeaderBoard():
+    leaderboardFrame.lift()
+
 def loadUploaded():
     loadingFrame.lift()
     threading.Thread(target=analyzeAudio).start()
@@ -252,6 +255,14 @@ if __name__ == "__main__":
 
     BUTTON_FONT= customtkinter.CTkFont(family='Fredoka', size=30)
     CUSTOM_FONT= customtkinter.CTkFont(family='Rubik Light', size=20)
+
+    #LEADERBOARD SCREEN
+    leaderboardFrame=tk.Frame(root, bg=LIGHT_PURPLE)
+    leaderboardFrame.place(
+        relx=0, 
+        rely=0.06, 
+        relwidth=1, 
+        relheight=0.94)
 
     #RESULTS SCREEN
     resultsFrame=tk.Frame(root, bg=LIGHT_PURPLE)
