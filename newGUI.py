@@ -269,7 +269,7 @@ if __name__ == "__main__":
                              bg=LIGHT_PURPLE, fg=DARK_PURPLE)
     score_label.place(relx=0.5, rely=0.4, anchor="center")
 
-    backButton = customtkinter.CTkButton(
+    backHomeButton = customtkinter.CTkButton(
         resultsFrame,
         text="Back",
         command=openWelcomeScreen,
@@ -283,11 +283,11 @@ if __name__ == "__main__":
         font=BUTTON_FONT,
         fg_color=DARK_PURPLE,
         text_color=WHITE)
-    backButton.place(relx=0.15, rely=0.8, anchor="n")
+    backHomeButton.place(relx=0.15, rely=0.8, anchor="n")
 
-    saveAnalyzeButton = customtkinter.CTkButton(
+    saveResultsButton = customtkinter.CTkButton(
         resultsFrame,
-        text="Analyze Recording",
+        text="Save Results",
         #command=leaderboard,
         width=300,
         height=80,
@@ -300,7 +300,7 @@ if __name__ == "__main__":
         fg_color=DARK_PURPLE,
         text_color=WHITE,
         state="disabled")
-    saveAnalyzeButton.place(relx=0.85, rely=0.8, anchor="n")
+    saveResultsButton.place(relx=0.85, rely=0.8, anchor="n")
 
     #LOADING SCREEN
     loadingFrame=tk.Frame(root, bg=LIGHT_PURPLE)
