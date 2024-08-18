@@ -393,7 +393,7 @@ def create_record_window():
     label_instruction.grid(row=1, column=0, columnspan=2, pady=(0,5))  # Adjusted pady to move down
 
     # New button and label side by side
-    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#90844c", state="disabled", command=getGeneratedLyrics)
+    button_example = tk.Button(record_frame, text="Generate lyrics", font=("Verdana", 20), bg="#F7EFE5", fg="#674188", state="disabled", command=getGeneratedLyrics)
     button_example.grid(row=1, column=3, padx=10, pady=(0, 5), sticky='w')  # Positioned to the left
 
     label_manual = tk.Label(record_frame,
@@ -401,7 +401,6 @@ def create_record_window():
                             font=("Verdana", 20),
                             bg="#bfc0e2", fg="#0a0b40")
     label_manual.grid(row=2, column=3, padx=10, pady=(50, 5), sticky='w')  # Positioned to the right
-
 
 
 
@@ -445,6 +444,8 @@ def create_record_window():
 
     label_blank = tk.Label(middle_frame, text="    ", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
     label_blank.grid(row=0, column=0, padx=10, pady=10, sticky='e')
+
+  
 
     # Song input
     label_song = tk.Label(middle_frame, text="Song:", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
