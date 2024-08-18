@@ -366,7 +366,7 @@ def create_record_window():
     global save_analyze_button
     global text_block
     global artist_entry, song_entry
-    global button_example
+    global button_example, loading_text
     default_text = "Your lyrics will show up here after you upload your song! Feel free to change them. Lyric detection is still under development."
     input1 = None
 
@@ -405,8 +405,7 @@ def create_record_window():
 
 
 
-    # Create a block of editable text
-
+    # Create a block of editable text for the lyrics
     text_block = tk.Text(record_frame, wrap='word', height=5, width=30, font=("Verdana", 18), bg="#F7EFE5",
                          fg="#674188")
     text_block.grid(row=1, column=2, rowspan=3, padx=20, pady=10, sticky='nsew')  # Adjusted pady to move down
@@ -462,6 +461,10 @@ def create_record_window():
     search_button = tk.Button(middle_frame, text="Search", command=searchLyrics, font=("Verdana", 20), bg="#674188", fg="#F7EFE5")
     search_button.grid(row=3, column=0, columnspan=2, pady=20)
 
+    # loading text
+    loading_text = tk.Label(middle_frame, text="", font=("Verdana", 18), bg="#bfc0e2", fg="#0a0b40")
+    loading_text.grid(row=2, column=0)
+
     # Create a frame for buttons at the bottom
     bottom_frame = tk.Frame(record_window, bg="#bfc0e2")
     bottom_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
@@ -494,6 +497,7 @@ def create_record_window():
 
 
 def searchLyrics():
+    loading_text.config(text="loading...")
     global lyrics
     artist = artist_entry.get()
     title = song_entry.get()
@@ -505,14 +509,20 @@ def searchLyrics():
     text_block.insert(tk.END, lyrics)
 
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
+    loading_text.config(text="")
 
 def getGeneratedLyrics():
+    loading_text.config(text="loading...")
+    threading.Thread(target=generateLyrics).start()
+
+def generateLyrics():
     global lyrics
     lyrics = getLyrics("output/" + name + "/vocals.wav")
 
     # Insert generated lyrics into the lyrics box
     text_block.delete('1.0', tk.END)
     text_block.insert(tk.END, lyrics)
+    loading_text.config(text="")
 
 def analyzeRecordedAudio():
     global score
@@ -539,12 +549,14 @@ def showLoadingWindow2():
     threading.Thread(target=analyzeRecordedAudio).start()
 
 def processOriginalSong():
+    loading_text.config(text="loading...")
     global lyrics
     separate_audio(input1,'output/')
     print("done separating audio")
 
     button_example.config(state=tk.NORMAL)
     rec_play_button.config(state=tk.NORMAL)  # Enable the Rec/Play button
+    loading_text.config(text="")
 
 def upload_fileRec():
     global input1, name
