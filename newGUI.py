@@ -22,19 +22,82 @@ BLACK = "#000000"
 # initialize input files
 input1 = ""
 input2 = ""
+name = ""
+score = 0.0
 
 
 def openWelcomeScreen():
+    global input1, input2, name, score, runButton
+    input1=""
+    input2=""
+    name=""
+    score=0
+
+
+    
+
+
+
     welcomeFrame.lift()
 
 def openRecordScreen():
+    global fileLabel, input1
+    input1=""
+    startRecordingButton.configure(state="disabled")
+    deleteRecordingButton.configure(state="disabled")
+    generateLyricsButton.configure(state="disabled")
+    saveAnalyzeButton.configure(state="disabled")
+    lyricsBox.delete(1.0, tk.END)
+    lyricsBox.insert(tk.END, "Your lyrics will show up here! Search for your song below, or upload an audio file and generate lyrics using AI. If you really want, you could type them out yourself.")
+    hideButtons(playFrame)
+    fileLabel.configure(text="File 1:")
     recordFrame.lift()
     
 def openAnalyzeScreen():
+    global runButton, file1_label, file2_label
+
+    hideButtons(file1_buttons_frame)
+    hideButtons(file2_buttons_frame)
+    runButton.configure(state="disabled")
+    file1_label.configure(text="File 1:")
+    file1_label.configure(text="File 2:")
+
     analyzeFrame.lift()
 
 def openLeaderBoard():
+    global singer_entry, addEntryButton, label_artist1, label_score
+    singer_entry.configure(state="normal")
+    addEntryButton.configure(state="normal")
+    # Artist
+    label_artist1 = tk.Label(leaderboardFrame, text=f"Song: {name}", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_artist1.place(relx=0.25, rely= 0.37, anchor="n")
+    # Score
+    label_score = tk.Label(leaderboardFrame, text=f"Score: {score}", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_score.place(relx=0.25, rely= 0.49, anchor="n")
     leaderboardFrame.lift()
+
+def add_to_leaderboard(entry_name, leaderboard):
+    global name
+    singer = entry_name.get()
+
+    if singer and score >= 0:
+        # Current entires is a list of tuples with (score, name)
+        global current_entries
+
+        # Add the new score and name to the list
+        current_entries.append((score, singer, name))
+
+        # Sort the list by score in descending order
+        current_entries.sort(reverse=True, key=lambda x: x[0])
+
+        # Clear the leaderboard and insert sorted entries
+        leaderboard.delete(0, tk.END)
+        for entry in current_entries:
+            leaderboard.insert(tk.END, f"{entry[1]}: {entry[0]:.2f} -- {name}")
+
+        # Clear the input fields after adding to the leaderboard
+        entry_name.delete(0, tk.END)
+        addEntryButton.configure(state="disabled")
 
 def loadUploaded():
     loadingFrame.lift()
@@ -172,7 +235,6 @@ def searchLyrics():
     lyricsBox.delete('1.0', tk.END)
     lyricsBox.insert(tk.END, lyrics)
 
-    startRecordingButton.configure(state="normal")  # Enable the Rec/Play button
     loading_text.config(text="")
 
 def upload_file1():
@@ -203,8 +265,7 @@ def upload_file2():
         update_run_button_state()
 
 def show_buttons1(frame):
-    for widget in frame.winfo_children():
-        widget.grid_forget()  # Hide existing buttons
+    hideButtons(frame)
     # Create 2 square buttons
 
     button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
@@ -216,8 +277,7 @@ def show_buttons1(frame):
     button2.grid(row=0, column=2, padx=10, pady=5)
 
 def show_buttons2(frame):
-    for widget in frame.winfo_children():
-        widget.grid_forget()  # Hide existing buttons
+    hideButtons(frame)
     # Create 2 square buttons
 
     button1 = tk.Button(frame, text="▶", width=3, height=0, font=("Verdana", 20), bg="#674188",
@@ -228,8 +288,12 @@ def show_buttons2(frame):
                        fg="#F7EFE5", command=lambda: stop_playback())
     button2.grid(row=0, column=2, padx=10, pady=5)
 
+def hideButtons(frame):
+    for widget in frame.winfo_children():
+        widget.grid_forget()  # Hide existing buttons
+
 def update_run_button_state():
-    if input1 and input2:
+    if len(input1)>1 and len(input2)>1:
         runButton.configure(state="normal")  # Enable the Run button
     else:
         runButton.configure(state="disabled")  # Disable the Run button
@@ -263,6 +327,69 @@ if __name__ == "__main__":
         rely=0.06, 
         relwidth=1, 
         relheight=0.94)
+    
+    # Name input
+    label_singer = tk.Label(leaderboardFrame, text="Singer:", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_singer.place(relx=0.25, rely=0.25, anchor="n")
+    singer_entry = customtkinter.CTkEntry(
+        leaderboardFrame, 
+        font=BUTTON_FONT, 
+        width=400, 
+        fg_color=WHITE, 
+        text_color=BLACK)
+    singer_entry.place(relx=0.25, rely= 0.3, anchor="n")
+
+    # Artist
+    label_artist1 = tk.Label(leaderboardFrame, text=f"Song:{name}", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_artist1.place(relx=0.25, rely= 0.37, anchor="n")
+
+
+    # Score
+    label_score = tk.Label(leaderboardFrame, text=f"Score:{score}", font=HEADER_FONT, bg=LIGHT_PURPLE, fg=DARK_PURPLE)
+    label_score.place(relx=0.25, rely= 0.49, anchor="n")
+
+    addEntryButton = customtkinter.CTkButton(
+        leaderboardFrame, 
+        text="Save", 
+        command=lambda: add_to_leaderboard(singer_entry, leaderboard), 
+        width=250, 
+        height=60, 
+        corner_radius=50, 
+        border_color=WHITE,
+        border_spacing=10,
+        border_width=3,
+        hover_color=MED_PURPLE,
+        font=BUTTON_FONT, 
+        fg_color=DARK_PURPLE, 
+        text_color=WHITE)
+    addEntryButton.place(relx=0.25, rely= 0.62, anchor="n")
+
+    # Create the leaderboard listbox in the frame_leaderboard
+    frame_leaderboard = tk.Frame(leaderboardFrame, bg="#bfc0e2")
+    frame_leaderboard.place(relx=0.65, rely=0.5, anchor="center")
+
+    tk.Label(frame_leaderboard, text="Leaderboard:", font=("Verdana", 24), bg="#bfc0e2", fg="#0a0b40").place(relx=0.65, rely=0.2, anchor="center")
+    leaderboard = tk.Listbox(frame_leaderboard, width=40, height=15, font=("Verdana", 18), bg="#F7EFE5", fg="#674188")
+    leaderboard.pack()
+
+
+    #back buttons
+    backHomeButton = customtkinter.CTkButton(
+        leaderboardFrame,
+        text="Back",
+        command=openWelcomeScreen,
+        width=300,
+        height=80,
+        corner_radius=50,
+        border_color=WHITE,
+        border_spacing=10,
+        border_width=3,
+        hover_color=MED_PURPLE,
+        font=BUTTON_FONT,
+        fg_color=DARK_PURPLE,
+        text_color=WHITE)
+    backHomeButton.place(relx=0.15, rely=0.8, anchor="n")
+
 
     #RESULTS SCREEN
     resultsFrame=tk.Frame(root, bg=LIGHT_PURPLE)
@@ -299,7 +426,7 @@ if __name__ == "__main__":
     saveResultsButton = customtkinter.CTkButton(
         resultsFrame,
         text="Save Results",
-        #command=leaderboard,
+        command=openLeaderBoard,
         width=300,
         height=80,
         corner_radius=50,
@@ -309,8 +436,7 @@ if __name__ == "__main__":
         hover_color=MED_PURPLE,
         font=BUTTON_FONT,
         fg_color=DARK_PURPLE,
-        text_color=WHITE,
-        state="disabled")
+        text_color=WHITE)
     saveResultsButton.place(relx=0.85, rely=0.8, anchor="n")
 
     #LOADING SCREEN
