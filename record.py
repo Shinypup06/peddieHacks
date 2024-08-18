@@ -2,7 +2,6 @@ import pyaudio
 import wave
 import threading
 import time
-from gui import *
 from sound import *
 
 def get_audio_length(file_path):

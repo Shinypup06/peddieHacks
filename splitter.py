@@ -1,7 +1,6 @@
 from spleeter.separator import Separator
 import warnings, sys, os
 import tensorflow as tf
-from gui import *
 
 #filter out warnings (idk if it actually does filter out warnings though)
 warnings.filterwarnings('ignore')
